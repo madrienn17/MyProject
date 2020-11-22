@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/navigation_splash">
+
+
+    <fragment
+        android:id="@+id/navigation_restaurants"
+        android:name="com.example.myproject.ui.fragments.RestaurantsListFragment"
+        android:label="@string/restaurants"
+        tools:layout="@layout/fragment_restaurants" >
+        <action
+            android:id="@+id/action_navigation_restaurants_to_navigation_details"
+            app:destination="@id/navigation_details" />
+        <action
+            android:id="@+id/action_navigation_restaurants_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_splash"
+        android:name="com.example.myproject.ui.fragments.SplashFragment"
+        android:label="@string/add_restaurant"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_navigation_add_restaurant_to_navigation_restaurants"
+            app:destination="@id/navigation_restaurants" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_details"
+        android:name="com.example.myproject.ui.fragments.DetailsFragment"
+        android:label="@string/details"
+        tools:layout="@layout/fragment_details" >
+        <action
+            android:id="@+id/action_navigation_details_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
+        <action
+            android:id="@+id/action_navigation_details_to_navigation_restaurants"
+            app:destination="@id/navigation_restaurants" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.example.myproject.ui.fragments.ProfileFragment"
+        android:label="@string/profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_details"
+            app:destination="@id/navigation_details" />
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_restaurants"
+            app:destination="@id/navigation_restaurants" />
+    </fragment>
+</navigation>
