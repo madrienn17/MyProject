@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:width="108dp"
+    android:height="108dp"
+    android:id="@+id/restaurant_search_icon"
+    android:viewportWidth="108"
+    android:viewportHeight="108"
+    android:src="@drawable/restaurant"
+    tools:ignore="VectorRaster">
+</vector>

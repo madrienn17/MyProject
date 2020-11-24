@@ -6,11 +6,6 @@
         android:title="@string/restaurants" />
 
     <item
-        android:id="@+id/navigation_details"
-        android:icon="@drawable/information"
-        android:title="@string/details" />
-
-    <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/user"
         android:title="@string/profile" />

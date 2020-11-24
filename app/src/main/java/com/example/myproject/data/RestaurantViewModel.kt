@@ -21,7 +21,7 @@ class RestaurantViewModel: ViewModel() {
         for(i in 0..nr) {
             Log.d("lefut", i.toString())
             val restaurant = Restaurant((i*258-96).toLong(),"Restaurant ${i}","street ${i}", i.toString(), "US", "abc", (14586+i).toLong(), "America", (4586786+i/8).toLong(), 7678-i*95*10.00, (i*5-65).toDouble(),
-            i, "aerfcaf.com", "aerfaeagryh.ro", "http://www.ondiseno.com/fotos_proyectos/360/grans/235301.jpg")
+            i, "aerfcaf.com", "aerfaeagryh.ro", "https://www.ondiseno.com/fotos_proyectos/360/grans/235301.jpg")
             restaurantList.add(restaurant)
         }
     }

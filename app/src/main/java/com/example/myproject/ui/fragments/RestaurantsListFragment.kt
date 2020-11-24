@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -24,6 +26,7 @@ class RestaurantsListFragment: Fragment(), OnItemClickListener {
     private lateinit var restaurantList: RecyclerView
     private lateinit var restaurantAdapter: RestaurantAdapter
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,6 +34,21 @@ class RestaurantsListFragment: Fragment(), OnItemClickListener {
     ): View? {
 
         val root = inflater.inflate(R.layout.fragment_restaurants,container,false)
+
+        val restaurantSearch: SearchView = root.findViewById(R.id.restaurant_search)
+
+        restaurantSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                restaurantAdapter.filter.filter(newText)
+                return false
+            }
+        })
+
+      restaurantSearch.findViewById<ImageView>(R.id.restaurant_search_icon)
 
         restaurantAdapter = RestaurantAdapter(listViewModel.getAllRestaurants(),this)
         restaurantList = root.findViewById(R.id.recyclerView)
@@ -68,4 +86,5 @@ class RestaurantsListFragment: Fragment(), OnItemClickListener {
         }
         alertDialog?.show()
     }
+
 }

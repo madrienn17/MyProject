@@ -1,22 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="30dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<!--   todo: tools:context="">-->
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <!--   todo: tools:context="">-->
 
     <TextView
-        android:id="@+id/text_details"
+        android:id="@+id/details_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:gravity="center_horizontal"
-        android:text="@string/text_details"
+        android:text="@string/details_name"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.046" />
+
+    <TextView
+        android:id="@+id/details_id"
+        android:layout_width="match_parent"
+        android:layout_height="26dp"
+        android:text="@string/details_id"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/details_name" />
+
+    <TextView
+        android:id="@+id/details_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/details_address" />
+
+    <TextView
+        android:id="@+id/details_city"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/details_city" />
+
+    <TextView
+        android:id="@+id/details_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/details_state" />
+
+    <TextView
+        android:id="@+id/details_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/details_area" />
+
+    <TextView
+        android:id="@+id/details_postalcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/details_postalcode" />
+
+    <TextView
+        android:id="@+id/details_country"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/details_country" />
+
+    <TextView
+        android:id="@+id/details_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/details_price" />
+
+    <TextView
+        android:id="@+id/details_reserve_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/details_reserve_url" />
+
+    <TextView
+        android:id="@+id/details_mobile_reserve_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/details_mobile_reserve_url" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/call_the_place"
+            android:layout_width="98dp"
+            android:layout_height="99dp"
+            android:background="@drawable/telephone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/view_location_map"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/view_location_map"
+            android:layout_width="90dp"
+            android:layout_height="99dp"
+            android:background="@drawable/map"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/call_the_place"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
