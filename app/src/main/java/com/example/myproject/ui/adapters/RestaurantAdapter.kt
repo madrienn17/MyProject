@@ -14,8 +14,8 @@ import kotlin.collections.ArrayList
 
 
 class RestaurantAdapter(
-    private val restaurantList: List<Restaurant>,
-    private val listener: OnItemClickListener
+        private var restaurantList: List<Restaurant>,
+        private val listener: OnItemClickListener
 ): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(), Filterable {
     var restaurantFilterList : ArrayList<String> = arrayListOf()
 
@@ -68,26 +68,32 @@ class RestaurantAdapter(
         //Log.d("position", currentItem.id.toString())
         //print(currentItem.image_url)
 
-       // holder.name.text = restaurantFilterList[position]
-
-        Glide.with(holder.itemView)
+        Glide.with(holder.itemView.context)
                 .load(currentItem.image_url)
                 .placeholder(R.drawable.ic_launcher_foreground)
-                .into(holder.image)
+                .into(holder.image).
+                view
         holder.price.text = currentItem.price.toString()
         holder.address.text = currentItem.address
         holder.name.text = currentItem.name
         holder.favourite.setOnClickListener {
             holder.favourite.setBackgroundResource(R.drawable.star_filled)
-            Snackbar.make(holder.itemView, "Item $position added to favourites", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(
+                holder.itemView,
+                "Item $position added to favourites",
+                Snackbar.LENGTH_SHORT
+            ).show()
         }
         holder.favourite.setOnLongClickListener {
             holder.favourite.setBackgroundResource(R.drawable.star)
-            Snackbar.make(holder.itemView, "Item $position removed from favourites", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(
+                holder.itemView,
+                "Item $position removed from favourites",
+                Snackbar.LENGTH_SHORT
+            ).show()
             true
         }
     }
-
     override fun getItemCount() = restaurantList.size
 
     override fun getFilter(): Filter {

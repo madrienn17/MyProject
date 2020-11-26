@@ -36,7 +36,6 @@
         android:layout_height="150dp"
         android:layout_marginBottom="25dp"
         android:background="@drawable/user"
-        android:contentDescription="@string/todo"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/passwordLayout"
         app:layout_constraintEnd_toEndOf="parent"

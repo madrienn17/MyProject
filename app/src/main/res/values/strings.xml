@@ -1,13 +1,9 @@
 <resources>
-    <string name="app_name">MyProject</string>
+    <string name="app_name">Where to eat?</string>
     <string name="restaurants">Restaurants</string>
-    <string name="add_restaurant">Add</string>
     <string name="details">Details</string>
     <string name="profile">Profile</string>
-    <string name="new_Restaurant">Add new restaurant</string>
-    <string name="add">Add</string>
     <string name="details_name">Name</string>
-    <string name="app_title">Where to eat?</string>
     <string name="logo">logo</string>
     <string name="details_id">Id</string>
     <string name="details_address">Address</string>
@@ -26,7 +22,6 @@
     <string name="password2">Password2</string>
     <string name="save_changes">Save Changes</string>
     <string name="username">UserName</string>
-    <string name="todo">TODO</string>
     <string name="action_search">Search</string>
 
     <string name="action_settings">Settings</string>

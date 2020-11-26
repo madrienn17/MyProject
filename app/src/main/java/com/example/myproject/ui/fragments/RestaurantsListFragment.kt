@@ -1,13 +1,10 @@
 package com.example.myproject.ui.fragments
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -28,29 +25,29 @@ class RestaurantsListFragment: Fragment(), OnItemClickListener {
 
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
 
-        val root = inflater.inflate(R.layout.fragment_restaurants,container,false)
+        val root = inflater.inflate(R.layout.fragment_restaurants, container, false)
 
-        val restaurantSearch: SearchView = root.findViewById(R.id.restaurant_search)
+        //val restaurantSearch: SearchView = root.findViewById(R.id.restaurant_search)
 
-        restaurantSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
+//        restaurantSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+//            override fun onQueryTextSubmit(query: String?): Boolean {
+//                return false
+//            }
+//
+//            override fun onQueryTextChange(newText: String?): Boolean {
+//                restaurantAdapter.filter.filter(newText)
+//                return false
+//            }
+//        })
+//
+//      restaurantSearch.findViewById<ImageView>(R.id.restaurant_search_icon)
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                restaurantAdapter.filter.filter(newText)
-                return false
-            }
-        })
-
-      restaurantSearch.findViewById<ImageView>(R.id.restaurant_search_icon)
-
-        restaurantAdapter = RestaurantAdapter(listViewModel.getAllRestaurants(),this)
+        restaurantAdapter = RestaurantAdapter(listViewModel.getAllRestaurants(), this)
         restaurantList = root.findViewById(R.id.recyclerView)
         restaurantList.adapter = restaurantAdapter
         restaurantList.layoutManager = LinearLayoutManager(activity)
@@ -71,12 +68,12 @@ class RestaurantsListFragment: Fragment(), OnItemClickListener {
             val builder = AlertDialog.Builder(it)
             builder.apply {
                 setTitle("Are you sure you want to delete this item?")
-                setPositiveButton("Yes",
-                    DialogInterface.OnClickListener { _, _ ->
-                        listViewModel.removeRestaurant(position)
-                        restaurantAdapter.notifyDataSetChanged()
-                        Toast.makeText(activity, "Item $position Deleted", Toast.LENGTH_SHORT).show()
-                    })
+                setPositiveButton("Yes"
+                ) { _, _ ->
+                    listViewModel.removeRestaurant(position)
+                    restaurantAdapter.notifyDataSetChanged()
+                    Toast.makeText(activity, "Item $position Deleted", Toast.LENGTH_SHORT).show()
+                }
                 setNegativeButton("No"
                 ) { _, _ ->
                     Toast.makeText(activity, "Delete cancelled", Toast.LENGTH_SHORT).show()
@@ -86,5 +83,4 @@ class RestaurantsListFragment: Fragment(), OnItemClickListener {
         }
         alertDialog?.show()
     }
-
 }

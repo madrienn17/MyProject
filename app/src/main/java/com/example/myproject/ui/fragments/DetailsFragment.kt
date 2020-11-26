@@ -7,13 +7,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.firstapplication.R
 import com.example.myproject.models.Restaurant
+import com.example.myproject.ui.viewmodels.DetailsViewModel
 
 class DetailsFragment: Fragment() {
     private lateinit var myView: View
     private lateinit var restaurant: Restaurant
     var position: Int = 0
+    private var model: DetailsViewModel?=null
+    private val TAG = "DetailsFragment"
+
+    private val viewModel: DetailsViewModel by lazy {
+        ViewModelProvider(this).get(DetailsViewModel::class.java)
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -26,6 +34,19 @@ class DetailsFragment: Fragment() {
         }
     }
 
+//    private fun getStats(service: RestaurantApiService) {
+//        val call = service.getStats()
+//        call.enqueue(object : Callback<ArrayList<String>> {
+//            override fun onResponse(call: Call<ArrayList<String>>, response: Response<ArrayList<String>>) {
+//                val stats = response.body().toString()
+//                Log.d(TAG, "Stats: $stats")
+//            }
+//            override fun onFailure(call: Call<ArrayList<String>>, t: Throwable) {
+//                Log.d(TAG, "Error fetching data!")
+//            }
+//        })
+//    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         myView = inflater.inflate(R.layout.fragment_details, container, false)
@@ -34,21 +55,11 @@ class DetailsFragment: Fragment() {
     }
 
     private fun init() {
-       // myView.findViewById<TextView>(R.id.name) = restaurant.name
+        //myView.findViewById<TextView>(R.id.name).text = restaurant.name
+        //myView.findViewById<TextView>(R.id.details_id).text = restaurant.id.toString()
+        //TODO(az osszes propertyre)
+        //val service = RestaurantApiClient.getInstance().create(RestaurantApiService::class.java)
+       // getStats(service)
+
     }
-    /* "id": 107257,
-    "name": "Las Tablas Colombian Steak House",
-    "address": "2942 N Lincoln Ave",
-    "city": "Chicago",
-    "state": "IL",
-    "area": "Chicago / Illinois",
-    "postal_code": "60657",
-    "country": "US",
-    "phone": "7738712414",
-    "lat": 41.935137,
-    "lng": -87.662815,
-    "price": 2,
-    "reserve_url": "http://www.opentable.com/single.aspx?rid=107257",
-    "mobile_reserve_url": "http://mobile.opentable.com/opentable/?restId=107257",
-    "image_url": */
 }

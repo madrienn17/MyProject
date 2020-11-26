@@ -22,7 +22,6 @@
     <fragment
         android:id="@+id/navigation_splash"
         android:name="com.example.myproject.ui.fragments.SplashFragment"
-        android:label="@string/add_restaurant"
         tools:layout="@layout/fragment_splash" >
         <action
             android:id="@+id/action_navigation_add_restaurant_to_navigation_restaurants"
