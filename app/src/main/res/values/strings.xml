@@ -17,10 +17,7 @@
     <string name="details_mobile_reserve_url">Mobile Reserve URL</string>
     <string name="call_the_place">Call the Place</string>
     <string name="profile_pic">Profile picture</string>
-    <string name="current_password">Password</string>
-    <string name="new_password">New password</string>
-    <string name="password2">Password2</string>
-    <string name="save_changes">Save Changes</string>
+    <string name="view_favourites">Favourites</string>
     <string name="username">UserName</string>
     <string name="action_search">Search</string>
 

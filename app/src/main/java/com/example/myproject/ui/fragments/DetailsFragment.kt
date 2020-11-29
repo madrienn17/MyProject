@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.firstapplication.R
 import com.example.myproject.models.Restaurant
 import com.example.myproject.ui.viewmodels.DetailsViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class DetailsFragment: Fragment() {
     private lateinit var myView: View
@@ -49,6 +50,8 @@ class DetailsFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        val navBar: BottomNavigationView? = this.activity?.findViewById(R.id.nav_view)
+        navBar!!.visibility = View.VISIBLE
         myView = inflater.inflate(R.layout.fragment_details, container, false)
         init()
         return myView

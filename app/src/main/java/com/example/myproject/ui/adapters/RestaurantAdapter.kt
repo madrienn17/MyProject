@@ -13,10 +13,10 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class RestaurantAdapter(
-        private var restaurantList: List<Restaurant>,
-        private val listener: OnItemClickListener
-): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(), Filterable {
+class RestaurantAdapter(): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(), Filterable {
+    private var restaurantList = Collections.emptyList<Restaurant>()
+    private lateinit var listener: OnItemClickListener
+
     var restaurantFilterList : ArrayList<String> = arrayListOf()
 
     fun initializeFilter() {
@@ -24,7 +24,6 @@ class RestaurantAdapter(
             restaurantFilterList[i] = restaurantList[i].name
         }
     }
-
 
     inner class RestaurantViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
         val image: ImageView = itemView.findViewById(R.id.imageView)
@@ -64,7 +63,7 @@ class RestaurantAdapter(
     }
 
     override fun onBindViewHolder(holder: RestaurantViewHolder, position: Int) {
-       val currentItem = restaurantList[position]
+        val currentItem = restaurantList[position]
         //Log.d("position", currentItem.id.toString())
         //print(currentItem.image_url)
 
@@ -123,9 +122,10 @@ class RestaurantAdapter(
             }
         }
     }
-//    override fun getItemCount(): Int {
-//        return restaurantFilterList.size
-//    }
+    fun setData(restaurants: List<Restaurant>) {
+        this.restaurantList = restaurants
+        notifyDataSetChanged()
+    }
 }
 interface OnItemClickListener {
     fun onItemClick(position: Int)
