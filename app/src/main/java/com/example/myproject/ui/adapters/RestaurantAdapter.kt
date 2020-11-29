@@ -27,7 +27,7 @@ class RestaurantAdapter(var listener :OnItemClickListener): RecyclerView.Adapter
     }
 
     inner class RestaurantViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        val image: ImageView = itemView.findViewById(R.id.imageView)
+        val image: ImageView = itemView.findViewById(R.id.image)
         val name: TextView = itemView.findViewById(R.id.name)
         val address: TextView = itemView.findViewById(R.id.address)
         val price: TextView = itemView.findViewById(R.id.price)

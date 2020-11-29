@@ -51,5 +51,15 @@
         <action
             android:id="@+id/action_navigation_profile_to_navigation_restaurants"
             app:destination="@id/navigation_restaurants" />
+        <action
+            android:id="@+id/action_navigation_profile_to_navigation_favourites"
+            app:destination="@id/navigation_favourites" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_favourites"
+        android:name="com.example.myproject.ui.fragments.FavouritesFragment"
+        android:label="@string/view_favourites"
+        tools:layout="@layout/fragment_favourites_list">
     </fragment>
 </navigation>
