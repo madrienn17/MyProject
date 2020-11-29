@@ -7,14 +7,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.firstapplication.R
-import com.example.myproject.ui.viewmodels.RestaurantsListViewModel
+import com.example.myproject.ui.adapters.RestaurantAdapter
+import com.example.myproject.ui.viewmodels.ApiViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 
 class SplashFragment : Fragment(), CoroutineScope {
-    private lateinit var restaurantViewModel: RestaurantsListViewModel
+    private lateinit var restaurantViewModel: ApiViewModel
+    private lateinit var adapter: RestaurantAdapter
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + Job()
@@ -27,17 +29,19 @@ class SplashFragment : Fragment(), CoroutineScope {
         val navBar: BottomNavigationView? = this.activity?.findViewById(R.id.nav_view)
         navBar!!.visibility = View.GONE
        launch {
-//           val repository = RestaurantApiRepository()
-//           val factory = ApiViewModelFactory(repository)
-//           restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(RestaurantsListViewModel::class.java)
-//           lateinit var list : List<Restaurant>
+//           val repository = ApiRepository()
+//            val factory = ApiViewModelFactory(repository)
+//            restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
 //
-//           restaurantViewModel.loadRestaurants("London")
+//            restaurantViewModel.loadRestaurants("London")
+//            lateinit var list: List<Restaurant>
+//            adapter = RestaurantAdapter()
 //
-//           restaurantViewModel.restaurants.observe(requireActivity(), { restaurants ->
-//               list = restaurants
-//               Log.d("APIDATA", restaurants[10].toString())
-//           })
+//            restaurantViewModel.restaurants.observe(requireActivity(), { restaurants ->
+//                list = restaurants
+//                adapter.setData(list)
+//                Log.d("APIDATA", restaurants.toString())
+//            })
 
            delay(5000)
            withContext(Dispatchers.Main) {

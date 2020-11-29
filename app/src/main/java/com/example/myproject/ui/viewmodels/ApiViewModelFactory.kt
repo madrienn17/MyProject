@@ -2,12 +2,12 @@ package com.example.myproject.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.myproject.api.RestaurantApiRepository
+import com.example.myproject.repository.ApiRepository
 
-class ApiViewModelFactory (private val repository: RestaurantApiRepository): ViewModelProvider.Factory{
+class ApiViewModelFactory (private val repository: ApiRepository): ViewModelProvider.Factory{
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return RestaurantsListViewModel(repository) as T
+        return ApiViewModel(repository) as T
     }
 
 }

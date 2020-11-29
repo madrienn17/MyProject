@@ -8,7 +8,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.firstapplication.R
-import com.example.myproject.data.RestaurantViewModel
+import com.example.myproject.data.RestaurantDataModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_restaurants, R.id.navigation_splash, R.id.navigation_details, R.id.navigation_profile))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-        val restaurantViewModel: RestaurantViewModel by viewModels()
+        val restaurantDataModel: RestaurantDataModel by viewModels()
         //restaurantViewModel.generateDummyData(10)
     }
 }

@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.myproject.models.Restaurant
 
-class RestaurantViewModel: ViewModel() {
+class RestaurantDataModel: ViewModel() {
     private val restaurantList: ArrayList<Restaurant> = arrayListOf()
 
     fun addRestaurant(restaurant: Restaurant) {

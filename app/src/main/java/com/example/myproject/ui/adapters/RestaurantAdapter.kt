@@ -3,19 +3,20 @@ package com.example.myproject.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.firstapplication.R
 import com.example.myproject.models.Restaurant
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
-import kotlin.collections.ArrayList
 
 
-class RestaurantAdapter(): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(), Filterable {
+class RestaurantAdapter(var listener :OnItemClickListener): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(){
     private var restaurantList = Collections.emptyList<Restaurant>()
-    private lateinit var listener: OnItemClickListener
+
 
     var restaurantFilterList : ArrayList<String> = arrayListOf()
 
@@ -25,7 +26,7 @@ class RestaurantAdapter(): RecyclerView.Adapter<RestaurantAdapter.RestaurantView
         }
     }
 
-    inner class RestaurantViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
+    inner class RestaurantViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val image: ImageView = itemView.findViewById(R.id.imageView)
         val name: TextView = itemView.findViewById(R.id.name)
         val address: TextView = itemView.findViewById(R.id.address)
@@ -35,7 +36,6 @@ class RestaurantAdapter(): RecyclerView.Adapter<RestaurantAdapter.RestaurantView
 
         init {
             itemView.setOnClickListener(this)
-            itemView.setOnLongClickListener(this)
         }
 
         override fun onClick(v: View?) {
@@ -43,14 +43,6 @@ class RestaurantAdapter(): RecyclerView.Adapter<RestaurantAdapter.RestaurantView
             if(position != RecyclerView.NO_POSITION) {
                 listener.onItemClick(position)
             }
-        }
-
-        override fun onLongClick(v: View?): Boolean {
-            val position: Int = adapterPosition
-            if(position != RecyclerView.NO_POSITION) {
-                listener.onItemLongClick(position)
-            }
-            return true
         }
     }
 
@@ -64,14 +56,11 @@ class RestaurantAdapter(): RecyclerView.Adapter<RestaurantAdapter.RestaurantView
 
     override fun onBindViewHolder(holder: RestaurantViewHolder, position: Int) {
         val currentItem = restaurantList[position]
-        //Log.d("position", currentItem.id.toString())
-        //print(currentItem.image_url)
 
         Glide.with(holder.itemView.context)
                 .load(currentItem.image_url)
                 .placeholder(R.drawable.ic_launcher_foreground)
-                .into(holder.image).
-                view
+                .into(holder.image).view
         holder.price.text = currentItem.price.toString()
         holder.address.text = currentItem.address
         holder.name.text = currentItem.name
@@ -95,33 +84,6 @@ class RestaurantAdapter(): RecyclerView.Adapter<RestaurantAdapter.RestaurantView
     }
     override fun getItemCount() = restaurantList.size
 
-    override fun getFilter(): Filter {
-        return object : Filter() {
-            override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val charSearch = constraint.toString()
-                if (charSearch.isEmpty()) {
-                    initializeFilter()
-                } else {
-                    val resultList = ArrayList<String>()
-                    for (row in restaurantList) {
-                        if (row.name.toLowerCase(Locale.ROOT).contains(charSearch.toLowerCase(Locale.ROOT))) {
-                            resultList.add(row.name)
-                        }
-                    }
-                    restaurantFilterList = resultList
-                }
-                val filterResults = FilterResults()
-                filterResults.values = restaurantFilterList
-                return filterResults
-            }
-
-            @Suppress("UNCHECKED_CAST")
-            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                restaurantFilterList = results?.values as ArrayList<String>
-                notifyDataSetChanged()
-            }
-        }
-    }
     fun setData(restaurants: List<Restaurant>) {
         this.restaurantList = restaurants
         notifyDataSetChanged()
@@ -129,5 +91,4 @@ class RestaurantAdapter(): RecyclerView.Adapter<RestaurantAdapter.RestaurantView
 }
 interface OnItemClickListener {
     fun onItemClick(position: Int)
-    fun onItemLongClick(position: Int)
 }

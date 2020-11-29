@@ -1,6 +1,7 @@
-package com.example.myproject.data
+package com.example.myproject.repository
 
 import androidx.lifecycle.LiveData
+import com.example.myproject.data.RestaurantDao
 import com.example.myproject.models.Restaurant
 
 class RepositoryDao(private val restaurant: RestaurantDao) {

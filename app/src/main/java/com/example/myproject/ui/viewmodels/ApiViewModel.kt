@@ -2,12 +2,12 @@ package com.example.myproject.ui.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.myproject.api.RestaurantApiRepository
 import com.example.myproject.models.Restaurant
 import com.example.myproject.models.RestaurantsByCity
+import com.example.myproject.repository.ApiRepository
 
 
-class RestaurantsListViewModel(private val repository: RestaurantApiRepository) : ViewModel() {
+class ApiViewModel(private val repository: ApiRepository) : ViewModel() {
     val restaurants: MutableLiveData<List<Restaurant>> = MutableLiveData()
 
     suspend fun getRestaurantsByCity(city: String) {
