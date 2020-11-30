@@ -29,25 +29,10 @@ class SplashFragment : Fragment(), CoroutineScope {
         val navBar: BottomNavigationView? = this.activity?.findViewById(R.id.nav_view)
         navBar!!.visibility = View.GONE
        launch {
-//           val repository = ApiRepository()
-//            val factory = ApiViewModelFactory(repository)
-//            restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-//
-//            restaurantViewModel.loadRestaurants("London")
-//            lateinit var list: List<Restaurant>
-//            adapter = RestaurantAdapter()
-//
-//            restaurantViewModel.restaurants.observe(requireActivity(), { restaurants ->
-//                list = restaurants
-//                adapter.setData(list)
-//                Log.d("APIDATA", restaurants.toString())
-//            })
-
            delay(5000)
            withContext(Dispatchers.Main) {
                findNavController().navigate(R.id.navigation_restaurants)
            }
        }
-
     }
 }

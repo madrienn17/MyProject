@@ -1,5 +1,6 @@
 package com.example.myproject.ui.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -24,20 +25,7 @@ class DetailsFragment: Fragment() {
     private val viewModel: DetailsViewModel by lazy {
         ViewModelProvider(this).get(DetailsViewModel::class.java)
     }
-
-//    private fun getStats(service: RestaurantApiService) {
-//        val call = service.getStats()
-//        call.enqueue(object : Callback<ArrayList<String>> {
-//            override fun onResponse(call: Call<ArrayList<String>>, response: Response<ArrayList<String>>) {
-//                val stats = response.body().toString()
-//                Log.d(TAG, "Stats: $stats")
-//            }
-//            override fun onFailure(call: Call<ArrayList<String>>, t: Throwable) {
-//                Log.d(TAG, "Error fetching data!")
-//            }
-//        })
-//    }
-
+    @SuppressLint("CutPasteId")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         val navBar: BottomNavigationView? = this.activity?.findViewById(R.id.nav_view)
@@ -83,6 +71,18 @@ class DetailsFragment: Fragment() {
             intent.action = Intent.ACTION_DIAL
             intent.data = Uri.parse("tel:$phone")
             startActivity(intent)
+        }
+
+        val reserveUrl = myView.findViewById<TextView>(R.id.details_reserve_url)
+        reserveUrl.setOnClickListener{
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(reserve_url))
+            startActivity(browserIntent)
+        }
+
+        val mobileReservation = myView.findViewById<TextView>(R.id.details_mobile_reserve_url)
+        mobileReservation.setOnClickListener{
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mobile_reserve_url))
+            startActivity(browserIntent)
         }
 
         return myView
