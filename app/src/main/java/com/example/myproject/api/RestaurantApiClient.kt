@@ -12,8 +12,8 @@ object RestaurantApiClient {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
     }
+
     val api by lazy {
         retrofit.create(RestaurantApiService::class.java)
     }
-
 }

@@ -1,11 +1,15 @@
 package com.example.myproject.ui.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.firstapplication.R
@@ -14,7 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 
-class RestaurantAdapter(var listener :OnItemClickListener): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(){
+class RestaurantAdapter(val context:Context): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(){
     private var restaurantList = Collections.emptyList<Restaurant>()
 
 
@@ -26,24 +30,12 @@ class RestaurantAdapter(var listener :OnItemClickListener): RecyclerView.Adapter
         }
     }
 
-    inner class RestaurantViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class RestaurantViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val image: ImageView = itemView.findViewById(R.id.image)
         val name: TextView = itemView.findViewById(R.id.name)
         val address: TextView = itemView.findViewById(R.id.address)
         val price: TextView = itemView.findViewById(R.id.price)
         val favourite: ImageButton = itemView.findViewById(R.id.star)
-
-
-        init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(v: View?) {
-            val position: Int = adapterPosition
-            if(position != RecyclerView.NO_POSITION) {
-                listener.onItemClick(position)
-            }
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantViewHolder {
@@ -81,6 +73,26 @@ class RestaurantAdapter(var listener :OnItemClickListener): RecyclerView.Adapter
             ).show()
             true
         }
+        holder.itemView.setOnClickListener{
+            val bundle = bundleOf(
+                    "name" to currentItem.name,
+                    "address" to currentItem.address,
+                    "city" to currentItem.city,
+                    "state" to currentItem.state,
+                    "area" to currentItem.area,
+                    "postal_code" to currentItem.postal_code,
+                    "country" to currentItem.country,
+                    "price" to currentItem.price,
+                    "lat" to currentItem.lat,
+                    "lng" to currentItem.lng,
+                    "phone" to currentItem.phone,
+                    "reserve_url" to currentItem.reserve_url,
+                    "mobile_reserve_url" to currentItem.mobile_reserve_url)
+
+            Toast.makeText(context, "Item $position clicked", Toast.LENGTH_SHORT).show()
+
+            holder.itemView.findNavController().navigate(R.id.navigation_details, bundle)
+        }
     }
     override fun getItemCount() = restaurantList.size
 
@@ -88,7 +100,4 @@ class RestaurantAdapter(var listener :OnItemClickListener): RecyclerView.Adapter
         this.restaurantList = restaurants
         notifyDataSetChanged()
     }
-}
-interface OnItemClickListener {
-    fun onItemClick(position: Int)
 }

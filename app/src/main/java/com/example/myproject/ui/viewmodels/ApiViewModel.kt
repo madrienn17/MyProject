@@ -2,6 +2,7 @@ package com.example.myproject.ui.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.myproject.models.CityResponse
 import com.example.myproject.models.Restaurant
 import com.example.myproject.models.RestaurantsByCity
 import com.example.myproject.repository.ApiRepository
@@ -9,6 +10,7 @@ import com.example.myproject.repository.ApiRepository
 
 class ApiViewModel(private val repository: ApiRepository) : ViewModel() {
     val restaurants: MutableLiveData<List<Restaurant>> = MutableLiveData()
+    val cities: MutableLiveData<List<String>> = MutableLiveData()
 
     suspend fun getRestaurantsByCity(city: String) {
         val res = repository.getRestaurantsByCity(city)
@@ -45,4 +47,17 @@ class ApiViewModel(private val repository: ApiRepository) : ViewModel() {
         getRestaurantsByCity(city)
     }
 
+    suspend fun getCities() {
+        val res = repository.getCities()
+        cities.value = citiesConverter(res)
+    }
+
+    private fun citiesConverter(city: CityResponse): List<String> {
+        val cityresponse = mutableListOf<String>()
+
+        for (i in city.cities) {
+            cityresponse.add(i)
+        }
+        return cityresponse
+    }
 }
