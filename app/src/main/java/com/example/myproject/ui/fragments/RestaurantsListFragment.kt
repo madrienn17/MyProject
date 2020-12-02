@@ -1,33 +1,17 @@
 package com.example.myproject.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.firstapplication.R
-import com.example.myproject.models.Restaurant
-import com.example.myproject.repository.ApiRepository
 import com.example.myproject.ui.adapters.RestaurantAdapter
-import com.example.myproject.ui.viewmodels.ApiViewModel
-import com.example.myproject.ui.viewmodels.ApiViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
-class RestaurantsListFragment: Fragment(), CoroutineScope {
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + Job()
-
-    private lateinit var restaurantViewModel: ApiViewModel
+class RestaurantsListFragment: Fragment(){
     private lateinit var restaurantList: RecyclerView
     private lateinit var restaurantAdapter: RestaurantAdapter
 
@@ -43,12 +27,11 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
         val root = inflater.inflate(R.layout.fragment_restaurants, container, false)
 
         restaurantAdapter = RestaurantAdapter(requireContext())
+        restaurantAdapter.setData(SplashFragment.list)
         restaurantList = root.findViewById(R.id.recyclerView)
         restaurantList.adapter = restaurantAdapter
         restaurantList.layoutManager = LinearLayoutManager(activity)
         restaurantList.setHasFixedSize(true)
-
-
 
         restaurantList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -68,21 +51,4 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
         return root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        launch {
-            val repository = ApiRepository()
-            val factory = ApiViewModelFactory(repository)
-            restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-
-            restaurantViewModel.loadRestaurants("Birmingham")
-            lateinit var list: List<Restaurant>
-
-            restaurantViewModel.restaurants.observe(requireActivity(), { restaurants ->
-                list = restaurants
-                restaurantAdapter.setData(list)
-                Log.d("APIDATA", restaurants.toString())
-            })
-            super.onViewCreated(view, savedInstanceState)
-        }
-    }
 }
