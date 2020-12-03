@@ -1,15 +1,18 @@
 package com.example.myproject
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.firstapplication.R
+import com.example.myproject.ui.viewmodels.SharedViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
+    val sharedViewModel: SharedViewModel by viewModels ()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,5 +27,6 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 //        val restaurantDataModel: RestaurantDataModel by viewModels()
         //restaurantViewModel.generateDummyData(10)
+
     }
 }

@@ -14,11 +14,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.firstapplication.R
 import com.example.myproject.models.Restaurant
+import com.example.myproject.ui.viewmodels.SharedViewModel
+import com.example.myproject.utils.Constants
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 
-class RestaurantAdapter(val context:Context): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(){
+class RestaurantAdapter(val context:Context, val viewModel:SharedViewModel): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(){
     private var restaurantList = Collections.emptyList<Restaurant>()
 
 
@@ -58,9 +60,10 @@ class RestaurantAdapter(val context:Context): RecyclerView.Adapter<RestaurantAda
         holder.name.text = currentItem.name
         holder.favourite.setOnClickListener {
             holder.favourite.setBackgroundResource(R.drawable.star_filled)
+            viewModel.addFav(Constants.USER_ID, currentItem)
             Snackbar.make(
                 holder.itemView,
-                "Item $position added to favourites",
+                "Item ${currentItem.id} added to favourites",
                 Snackbar.LENGTH_SHORT
             ).show()
         }
@@ -68,7 +71,7 @@ class RestaurantAdapter(val context:Context): RecyclerView.Adapter<RestaurantAda
             holder.favourite.setBackgroundResource(R.drawable.star)
             Snackbar.make(
                 holder.itemView,
-                "Item $position removed from favourites",
+                "Item ${currentItem.id} removed from favourites",
                 Snackbar.LENGTH_SHORT
             ).show()
             true

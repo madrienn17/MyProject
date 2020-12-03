@@ -13,17 +13,17 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.firstapplication.R
 import com.example.myproject.models.Restaurant
-import com.example.myproject.ui.viewmodels.DetailsViewModel
+import com.example.myproject.ui.viewmodels.SharedViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class DetailsFragment: Fragment() {
     private lateinit var myView: View
     private lateinit var restaurant: Restaurant
-    private var model: DetailsViewModel?=null
+    private var model: SharedViewModel?=null
     private val TAG = "DetailsFragment"
 
-    private val viewModel: DetailsViewModel by lazy {
-        ViewModelProvider(this).get(DetailsViewModel::class.java)
+    private val viewModel: SharedViewModel by lazy {
+        ViewModelProvider(this).get(SharedViewModel::class.java)
     }
     @SuppressLint("CutPasteId")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
