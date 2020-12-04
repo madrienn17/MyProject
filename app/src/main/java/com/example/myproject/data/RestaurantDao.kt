@@ -2,19 +2,19 @@ package com.example.myproject.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.myproject.models.Restaurant
+import com.example.myproject.models.Favorite
 
 @Dao
 interface RestaurantDao {
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertRestaurantDao(restaurant:Restaurant)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRestaurantDao(favorite: Favorite)
 
     @Delete
-    suspend fun deleteRestaurantDao(restaurant: Restaurant)
+    suspend fun deleteRestaurantDao(favorite: Favorite)
 
-    @Query("Delete FROM restaurant_table")
+    @Query("Delete FROM favorites")
     suspend fun deleteAllDao()
 
-    @Query("SELECT * FROM restaurant_table ORDER BY name")
-    fun selectAllRestaurants(): LiveData<List<Restaurant>>
+    @Query("SELECT * FROM favorites ORDER BY userId ASC")
+    fun selectAllRestaurants(): LiveData<List<Favorite>>
 }

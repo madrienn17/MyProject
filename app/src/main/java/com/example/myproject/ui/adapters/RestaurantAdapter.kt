@@ -1,6 +1,7 @@
 package com.example.myproject.ui.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,16 +14,17 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.firstapplication.R
+import com.example.myproject.models.Favorite
 import com.example.myproject.models.Restaurant
+import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.example.myproject.ui.viewmodels.SharedViewModel
 import com.example.myproject.utils.Constants
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 
-class RestaurantAdapter(val context:Context, val viewModel:SharedViewModel): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(){
+class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val viewModel:SharedViewModel): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(){
     private var restaurantList = Collections.emptyList<Restaurant>()
-
 
     var restaurantFilterList : ArrayList<String> = arrayListOf()
 
@@ -58,7 +60,12 @@ class RestaurantAdapter(val context:Context, val viewModel:SharedViewModel): Rec
         holder.price.text = currentItem.price.toString()
         holder.address.text = currentItem.address
         holder.name.text = currentItem.name
+        val fav = Favorite(4,currentItem.id,Constants.USER_ID)
+
         holder.favourite.setOnClickListener {
+            daoViewModel.addRestaurantDB(fav)
+            val favL = daoViewModel.readAllData
+            Log.d("FAVDATA", favL.value.toString())
             holder.favourite.setBackgroundResource(R.drawable.star_filled)
             viewModel.addFav(Constants.USER_ID, currentItem)
             Snackbar.make(
@@ -67,7 +74,11 @@ class RestaurantAdapter(val context:Context, val viewModel:SharedViewModel): Rec
                 Snackbar.LENGTH_SHORT
             ).show()
         }
+
+
         holder.favourite.setOnLongClickListener {
+            val favL = daoViewModel.readAllData
+            Log.d("FAVDATA", favL.value.toString())
             holder.favourite.setBackgroundResource(R.drawable.star)
             Snackbar.make(
                 holder.itemView,

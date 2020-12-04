@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.firstapplication.R
 import com.example.myproject.ui.adapters.RestaurantAdapter
+import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.example.myproject.ui.viewmodels.SharedViewModel
 import com.example.myproject.utils.Constants
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -18,6 +19,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class RestaurantsListFragment: Fragment(){
     private lateinit var restaurantList: RecyclerView
     private lateinit var restaurantAdapter: RestaurantAdapter
+    private val daoViewModel: DaoViewModel by activityViewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -30,7 +32,7 @@ class RestaurantsListFragment: Fragment(){
 
         val root = inflater.inflate(R.layout.fragment_restaurants, container, false)
 
-        restaurantAdapter = RestaurantAdapter(requireContext(), sharedViewModel)
+        restaurantAdapter = RestaurantAdapter(daoViewModel, requireContext(), sharedViewModel)
         restaurantAdapter.setData(SplashFragment.list)
         restaurantList = root.findViewById(R.id.recyclerView)
         restaurantList.adapter = restaurantAdapter
