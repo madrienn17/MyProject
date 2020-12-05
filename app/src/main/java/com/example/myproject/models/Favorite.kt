@@ -8,5 +8,5 @@ data class Favorite (
         val restId:Long,
         val userId:Long,
         @PrimaryKey(autoGenerate = true)
-        val id:Int = 0,
+        val id:Int = 0
  )

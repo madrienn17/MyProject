@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.myproject.data.RestaurantRoomDatabase
 import com.example.myproject.models.Favorite
 import com.example.myproject.repository.RepositoryDao
@@ -24,7 +25,7 @@ class DaoViewModel(application: Application): AndroidViewModel(application) {
 
     fun addRestaurantDB(favorite: Favorite){
         viewModelScope.launch(Dispatchers.IO) {
-            repository.addRestaurantDao(favorite)
+            repository.insert(favorite)
         }
     }
 
@@ -37,6 +38,12 @@ class DaoViewModel(application: Application): AndroidViewModel(application) {
     fun deleteAll(){
         viewModelScope.launch(Dispatchers.IO) {
             repository.clearAll()
+        }
+    }
+
+    fun vacuumDb(supportSQLiteQuery: SupportSQLiteQuery) {
+        viewModelScope.launch (Dispatchers.IO){
+            repository.vacuumDb(supportSQLiteQuery)
         }
     }
 }

@@ -2,11 +2,12 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginStart="40sp"
-    android:layout_marginEnd="40sp"
-    android:layout_marginTop="25sp">
+    android:layout_marginTop="25sp"
+    android:layout_marginEnd="40sp">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -37,14 +38,12 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="291dp"
-        android:layout_height="315dp"
+        android:layout_width="268dp"
+        android:layout_height="410dp"
         android:contentDescription="@string/logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.111"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.501"
         app:srcCompat="@drawable/restaurant" />
 </androidx.constraintlayout.widget.ConstraintLayout>

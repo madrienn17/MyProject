@@ -1,21 +1,26 @@
 package com.example.myproject.repository
 
 import androidx.lifecycle.LiveData
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.myproject.data.RestaurantDao
 import com.example.myproject.models.Favorite
 
 class RepositoryDao(private val restaurant: RestaurantDao) {
     val getAll: LiveData<List<Favorite>> = restaurant.selectAllRestaurants()
 
-    suspend fun addRestaurantDao(favorite: Favorite) {
-        this.restaurant.insertRestaurantDao(favorite)
+    suspend fun insert(favorite: Favorite) {
+        restaurant.insert(favorite)
     }
 
     suspend fun deleteRestaurantDao(favorite: Favorite) {
-        this.restaurant.deleteRestaurantDao(favorite)
+        restaurant.deleteRestaurantDao(favorite)
     }
 
     suspend fun clearAll() {
-        this.restaurant.deleteAllDao()
+        restaurant.deleteAllDao()
+    }
+
+    suspend fun vacuumDb(supportSQLiteQuery: SupportSQLiteQuery): Int {
+        return restaurant.vacuumDb(supportSQLiteQuery)
     }
 }

@@ -10,6 +10,7 @@ import androidx.room.RoomSQLiteQuery;
 import androidx.room.SharedSQLiteStatement;
 import androidx.room.util.CursorUtil;
 import androidx.room.util.DBUtil;
+import androidx.sqlite.db.SupportSQLiteQuery;
 import androidx.sqlite.db.SupportSQLiteStatement;
 import com.example.myproject.models.Favorite;
 import java.lang.Exception;
@@ -38,7 +39,7 @@ public final class RestaurantDao_Impl implements RestaurantDao {
     this.__insertionAdapterOfFavorite = new EntityInsertionAdapter<Favorite>(__db) {
       @Override
       public String createQuery() {
-        return "INSERT OR REPLACE INTO `favorites` (`restId`,`userId`,`id`) VALUES (?,?,nullif(?, 0))";
+        return "INSERT OR IGNORE INTO `favorites` (`restId`,`userId`,`id`) VALUES (?,?,nullif(?, 0))";
       }
 
       @Override
@@ -69,7 +70,7 @@ public final class RestaurantDao_Impl implements RestaurantDao {
   }
 
   @Override
-  public Object insertRestaurantDao(final Favorite favorite, final Continuation<? super Unit> p1) {
+  public Object insert(final Favorite favorite, final Continuation<? super Unit> p1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       public Unit call() throws Exception {
@@ -156,5 +157,23 @@ public final class RestaurantDao_Impl implements RestaurantDao {
         _statement.release();
       }
     });
+  }
+
+  @Override
+  public int vacuumDb(final SupportSQLiteQuery supportSQLiteQuery) {
+    final SupportSQLiteQuery _internalQuery = supportSQLiteQuery;
+    __db.assertNotSuspendingTransaction();
+    final Cursor _cursor = DBUtil.query(__db, _internalQuery, false, null);
+    try {
+      final int _result;
+      if(_cursor.moveToFirst()) {
+        _result = _cursor.getInt(0);
+      } else {
+        _result = 0;
+      }
+      return _result;
+    } finally {
+      _cursor.close();
+    }
   }
 }

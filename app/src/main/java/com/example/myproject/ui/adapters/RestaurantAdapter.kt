@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.bumptech.glide.Glide
 import com.example.firstapplication.R
 import com.example.myproject.models.Favorite
@@ -25,6 +26,7 @@ import java.util.*
 
 class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val viewModel:SharedViewModel): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(){
     private var restaurantList = Collections.emptyList<Restaurant>()
+    private lateinit var fav : Favorite
 
     var restaurantFilterList : ArrayList<String> = arrayListOf()
 
@@ -60,10 +62,12 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
         holder.price.text = currentItem.price.toString()
         holder.address.text = currentItem.address
         holder.name.text = currentItem.name
-        val fav = Favorite(currentItem.id,Constants.USER_ID)
+
 
         holder.favourite.setOnClickListener {
+            fav = Favorite(currentItem.id,Constants.USER_ID)
             daoViewModel.addRestaurantDB(fav)
+            //notifyDataSetChanged()
             viewModel.addFav(Constants.USER_ID, currentItem)
             Log.d("SHARED",viewModel.favorited.toString())
             val favL = daoViewModel.readAllData
@@ -79,8 +83,10 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
 
 
         holder.favourite.setOnLongClickListener {
-            val favL = daoViewModel.readAllData
-            Log.d("FAVDATA", favL.value.toString())
+//            val favL = daoViewModel.readAllData
+//            Log.d("FAVDATA", favL.value.toString())
+            daoViewModel.deleteAll()
+            daoViewModel.vacuumDb(SimpleSQLiteQuery("VACUUM"))
             holder.favourite.setBackgroundResource(R.drawable.star)
             Snackbar.make(
                 holder.itemView,
