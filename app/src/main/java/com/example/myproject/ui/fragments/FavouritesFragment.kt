@@ -26,19 +26,14 @@ class FavouritesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val root = inflater.inflate(R.layout.fragment_restaurants, container, false)
+        val root = inflater.inflate(R.layout.fragment_favourites_list, container, false)
 
-        favorites = root.findViewById(R.id.fav_list)
         adapter = FavouritesAdapter(requireContext(),sharedViewModel)
-        favorites.adapter = adapter
         adapter.setFav(Constants.USER_ID)
+        favorites = root.findViewById(R.id.fav_list)
+        favorites.adapter = adapter
         favorites.layoutManager = LinearLayoutManager(activity)
         favorites.setHasFixedSize(true)
-
-        val arrayList = sharedViewModel.getUserFavorites(Constants.USER_ID)
-        for (data in arrayList) {
-            Log.d("FAV", data.toString())
-        }
 
         return root
     }

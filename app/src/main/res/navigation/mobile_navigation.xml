@@ -61,5 +61,8 @@
         android:name="com.example.myproject.ui.fragments.FavouritesFragment"
         android:label="@string/view_favourites"
         tools:layout="@layout/fragment_favourites_list">
+        <action
+            android:id="@+id/action_navigation_favourites_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
     </fragment>
 </navigation>

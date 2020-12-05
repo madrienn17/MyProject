@@ -15,6 +15,6 @@ interface RestaurantDao {
     @Query("Delete FROM favorites")
     suspend fun deleteAllDao()
 
-    @Query("SELECT * FROM favorites ORDER BY userId ASC")
+    @Query("SELECT * FROM favorites ORDER BY id ASC")
     fun selectAllRestaurants(): LiveData<List<Favorite>>
 }

@@ -60,14 +60,16 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
         holder.price.text = currentItem.price.toString()
         holder.address.text = currentItem.address
         holder.name.text = currentItem.name
-        val fav = Favorite(4,currentItem.id,Constants.USER_ID)
+        val fav = Favorite(currentItem.id,Constants.USER_ID)
 
         holder.favourite.setOnClickListener {
             daoViewModel.addRestaurantDB(fav)
+            viewModel.addFav(Constants.USER_ID, currentItem)
+            Log.d("SHARED",viewModel.favorited.toString())
             val favL = daoViewModel.readAllData
             Log.d("FAVDATA", favL.value.toString())
             holder.favourite.setBackgroundResource(R.drawable.star_filled)
-            viewModel.addFav(Constants.USER_ID, currentItem)
+
             Snackbar.make(
                 holder.itemView,
                 "Item ${currentItem.id} added to favourites",

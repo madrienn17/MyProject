@@ -70,8 +70,7 @@ class FavouritesAdapter(private val context: Context, private val sharedViewMode
     override fun getItemCount() = favoritesList.size
 
     fun setFav(userId:Long) {
-        val favorites = sharedViewModel.getUserFavorites(Constants.USER_ID)
-        this.favoritesList = favorites
+        this.favoritesList = sharedViewModel.getUserFavorites(userId)
         notifyDataSetChanged()
     }
 }

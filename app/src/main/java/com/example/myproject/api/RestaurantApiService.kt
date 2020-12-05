@@ -1,9 +1,6 @@
 package com.example.myproject.api
 
-import com.example.myproject.models.CityResponse
-import com.example.myproject.models.CountryResponse
-import com.example.myproject.models.RestaurantsByCity
-import com.example.myproject.models.RestaurantsByCountry
+import com.example.myproject.models.*
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -22,7 +19,7 @@ interface RestaurantApiService  {
 
     @GET("restaurants")
     suspend fun getRestaurantByCountry(
-        @Query("country")state:String
+        @Query("state")state:String
     ): RestaurantsByCountry
 
     @GET("cities")

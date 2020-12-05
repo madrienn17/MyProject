@@ -29,4 +29,8 @@ class MainActivity : AppCompatActivity() {
         //restaurantViewModel.generateDummyData(10)
 
     }
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = this.findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp()
+    }
 }

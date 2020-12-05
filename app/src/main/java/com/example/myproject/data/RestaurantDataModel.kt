@@ -7,9 +7,7 @@ import com.example.myproject.models.Restaurant
 class RestaurantDataModel: ViewModel() {
     private val restaurantList: ArrayList<Restaurant> = arrayListOf()
 
-    fun addRestaurant(restaurant: Restaurant) {
-        restaurantList.add(restaurant)
-    }
+    fun addRestaurant(restaurant: Restaurant) = restaurantList.add(restaurant)
 
     fun getRestaurant(id: Int) = restaurantList.getOrNull(id)
 
