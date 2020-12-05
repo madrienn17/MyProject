@@ -22,7 +22,14 @@ class SharedViewModel : ViewModel() {
         if(favorited.containsKey(uId)) {
             return favorited.getValue(uId)
         }
-
         return emptyList()
+    }
+
+    fun removeFavorite(restaurant: Restaurant) {
+        for(fav in favorited) {
+            if(fav.value.contains(restaurant)) {
+                fav.value.remove(restaurant)
+            }
+        }
     }
 }

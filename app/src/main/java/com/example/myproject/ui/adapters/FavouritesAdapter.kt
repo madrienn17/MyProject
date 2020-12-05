@@ -1,12 +1,14 @@
 package com.example.myproject.ui.adapters
 
 import android.content.Context
+import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -65,6 +67,29 @@ class FavouritesAdapter(private val context: Context, private val sharedViewMode
             Toast.makeText(this.context, "Item $position clicked", Toast.LENGTH_SHORT).show()
 
             holder.itemView.findNavController().navigate(R.id.navigation_details, bundle)
+        }
+
+        holder.itemView.setOnLongClickListener {
+            val alertDialog: AlertDialog = context.let{
+
+                val builder = AlertDialog.Builder(context)
+                builder.apply {
+                    setTitle("Are you sure you want to delete this item?")
+                    setPositiveButton("Yes"
+                    ) { _, _ ->
+                        sharedViewModel.removeFavorite(currentItem)
+                        notifyDataSetChanged()
+                        Toast.makeText(context, "Item $position Deleted", Toast.LENGTH_SHORT).show()
+                    }
+                    setNegativeButton("No"
+                    ) { _, _ ->
+                        Toast.makeText(context, "Delete cancelled", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                builder.create()
+            }
+            alertDialog.show()
+            alertDialog.isShowing
         }
     }
     override fun getItemCount() = favoritesList.size
