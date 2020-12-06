@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.SearchView
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -55,13 +56,35 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
         restaurantList.layoutManager = LinearLayoutManager(activity)
         restaurantList.setHasFixedSize(true)
 
-        val cityList = mutableListOf("SELECT CITY")
-        val countryList = mutableListOf("SELECT COUNTRY")
-        cityList += Constants.cities
-        countryList += Constants.countries
+        val searchbar = root.findViewById<SearchView>(R.id.searchView)
 
-        val citySpinnerAdapter= ArrayAdapter(requireContext(), R.layout.spinner_item, cityList)
-        val countrySpinnerAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, countryList)
+        searchbar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return if(query.isNullOrEmpty()) {
+                    false
+                } else {
+                    restaurantAdapter.filter.filter(query.toString())
+                    true
+                }
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return if(newText.isNullOrEmpty()) {
+                    false
+                } else {
+                    restaurantAdapter.filter.filter(newText.toString())
+                    true
+                }
+            }
+        })
+
+//        val cityList = mutableListOf("SELECT CITY")
+//        val countryList = mutableListOf("SELECT COUNTRY")
+//        cityList += Constants.cities
+//        countryList += Constants.countries
+
+        val citySpinnerAdapter= ArrayAdapter(requireContext(), R.layout.spinner_item, Constants.cities)
+        val countrySpinnerAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, Constants.countries)
 
         val citySpinner: Spinner = root.findViewById(R.id.spinner_city)
         val countrySpinner = root.findViewById<Spinner>(R.id.spinner_country)
@@ -71,7 +94,6 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
 
         citySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                restaurantAdapter.setData(SplashFragment.list)
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -107,7 +129,6 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-
             }
         }
 

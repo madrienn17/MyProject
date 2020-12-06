@@ -4,10 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -23,8 +20,9 @@ import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 
-class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val viewModel:SharedViewModel): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(){
+class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val viewModel:SharedViewModel): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(), Filterable{
     private var restaurantList = Collections.emptyList<Restaurant>()
+    var searchableList: MutableList<Restaurant> = mutableListOf()
     private lateinit var fav : Favorite
 
     inner class RestaurantViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -119,10 +117,43 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
             holder.itemView.findNavController().navigate(R.id.navigation_details, bundle)
         }
     }
-    override fun getItemCount() = restaurantList.size
+    override fun getItemCount() = searchableList.size
 
     fun setData(restaurants: List<Restaurant>) {
         this.restaurantList = restaurants
+        this.searchableList = restaurants.toMutableList()
         notifyDataSetChanged()
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            private val filterResults = FilterResults()
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                searchableList.clear()
+                if(constraint.isNullOrBlank()) {
+                    searchableList.addAll(restaurantList)
+                } else {
+                    val filterPattern = constraint.toString().toLowerCase(Locale.ROOT).trim { it <= ' '}
+                    for(item in 0..restaurantList.size) {
+                        if(restaurantList[item].name.toLowerCase(Locale.ROOT).contains(filterPattern)){
+                            searchableList.add(restaurantList[item])
+                        }
+                    }
+                }
+                return filterResults.also {
+                    it.values = searchableList
+                }
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                if(searchableList.isNullOrEmpty()) {
+                    setData(restaurantList)
+                }
+                else {
+                    setData(searchableList)
+                }
+                notifyDataSetChanged()
+            }
+        }
     }
 }

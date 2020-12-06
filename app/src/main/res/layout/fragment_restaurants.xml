@@ -42,6 +42,7 @@
 
     <SearchView
         android:id="@+id/searchView"
+        android:queryHint="Enter restaurant name..."
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"

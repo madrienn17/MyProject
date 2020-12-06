@@ -43,20 +43,15 @@ class SplashFragment : Fragment(), CoroutineScope {
            Log.d("CITYNR. ", Constants.cities.size.toString())
            Log.d("COUNTRIES ", Constants.countries.toString())
 
-
            restaurantViewModel.loadRestaurantsByCity("London")
 
-           //restaurantViewModel.loadRestaurantsByCountry("CA")
            lateinit var list: List<Restaurant>
-//           restaurantViewModel.restaurantsByCountry.observe(requireActivity(), {
-//               restaurants -> list = restaurants;setComp(list);Log.d("APIDATA",restaurants.toString())
-//           })
            restaurantViewModel.restaurantsByCity.observe(requireActivity(), { restaurants ->
                 list = restaurants
                 setComp(list)
                 Log.d("APIDATA", restaurants.toString())
            })
-          // delay(5000)
+
            withContext(Dispatchers.Main) {
                findNavController().navigate(R.id.navigation_restaurants)
            }
