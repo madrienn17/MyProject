@@ -1,7 +1,6 @@
 package com.example.myproject.ui.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,14 +27,6 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
     private var restaurantList = Collections.emptyList<Restaurant>()
     private lateinit var fav : Favorite
 
-    var restaurantFilterList : ArrayList<String> = arrayListOf()
-
-    fun initializeFilter() {
-        for (i in 1..restaurantList.size) {
-            restaurantFilterList[i] = restaurantList[i].name
-        }
-    }
-
     inner class RestaurantViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val image: ImageView = itemView.findViewById(R.id.image)
         val name: TextView = itemView.findViewById(R.id.name)
@@ -49,6 +40,7 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
            R.layout.list_item_row,
            parent, false
        )
+
         return RestaurantViewHolder(itemView)
     }
 
@@ -63,16 +55,27 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
         holder.address.text = currentItem.address
         holder.name.text = currentItem.name
 
+        if(currentItem.fav) {
+            holder.favourite.setBackgroundResource(R.drawable.star_filled)
+        }
+        else{
+            holder.favourite.setBackgroundResource(R.drawable.star)
+        }
 
         holder.favourite.setOnClickListener {
+
+//            Log.d("SHARED",viewModel.favorited.toString())
+//            val favL = daoViewModel.readAllData
+//            Log.d("FAVDATA", favL.value.toString())
+
+            holder.favourite.setBackgroundResource(R.drawable.star_filled  )
+            currentItem.setFav()
+
+
             fav = Favorite(currentItem.id,Constants.USER_ID)
             daoViewModel.addRestaurantDB(fav)
             //notifyDataSetChanged()
             viewModel.addFav(Constants.USER_ID, currentItem)
-            Log.d("SHARED",viewModel.favorited.toString())
-            val favL = daoViewModel.readAllData
-            Log.d("FAVDATA", favL.value.toString())
-            holder.favourite.setBackgroundResource(R.drawable.star_filled)
 
             Snackbar.make(
                 holder.itemView,

@@ -16,4 +16,7 @@ data class Restaurant(
     val reserve_url:String,
     val mobile_reserve_url: String,
     val image_url:String
-    )
+    ){
+    var fav = false
+    fun setFav() = !fav
+}

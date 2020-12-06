@@ -43,9 +43,9 @@ class SplashFragment : Fragment(), CoroutineScope {
            Log.d("CITYNR. ", Constants.cities.size.toString())
            Log.d("COUNTRIES ", Constants.countries.toString())
 
-           for (city in 2700 until Constants.cities.size) {
-               restaurantViewModel.loadRestaurantsByCity(Constants.cities[city])
-           }
+
+           restaurantViewModel.loadRestaurantsByCity("London")
+
            //restaurantViewModel.loadRestaurantsByCountry("CA")
            lateinit var list: List<Restaurant>
 //           restaurantViewModel.restaurantsByCountry.observe(requireActivity(), {
