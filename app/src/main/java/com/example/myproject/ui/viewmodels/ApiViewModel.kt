@@ -10,8 +10,8 @@ class ApiViewModel(private val repository: ApiRepository) : ViewModel() {
     val restaurantsByCity: MutableLiveData<List<Restaurant>> = MutableLiveData()
     val restaurantsByCountry: MutableLiveData<List<Restaurant>> = MutableLiveData()
 
-    private suspend fun getRestaurantsByCity(city: String) {
-        val res = repository.getRestaurantsByCity(city)
+    private suspend fun getRestaurantsByCity(city: String, page: Int) {
+        val res = repository.getRestaurantsByCity(city, page)
         restaurantsByCity.value = restaurantByCityConverter(res)
     }
 
@@ -41,29 +41,29 @@ class ApiViewModel(private val repository: ApiRepository) : ViewModel() {
         return list
     }
 
-    suspend fun loadRestaurantsByCity(city: String) {
-        getRestaurantsByCity(city)
+    suspend fun loadRestaurantsByCity(city: String, page:Int) {
+        getRestaurantsByCity(city, page)
     }
 
-    private suspend fun getRestaurantsByCountry(country:String) {
-        val res = repository.getRestaurantsByCountry(country)
-        restaurantsByCountry.value = restaurantsByCountryConverter(res)
+    private suspend fun getRestaurantsByCountry(country:String?, page:Int) {
+        val res = country?.let { repository.getRestaurantsByCountry(it, page) }
+        restaurantsByCountry.value = res?.let { restaurantsByCountryConverter(it) }
     }
 
-    suspend fun loadRestaurantsByCountry(country: String) {
-        getRestaurantsByCountry(country)
+    suspend fun loadRestaurantsByCountry(country: String, page:Int) {
+        getRestaurantsByCountry(country, page)
     }
 
-    private fun restaurantsByCountryConverter(restaurantsByCountry: RestaurantsByCountry): List<Restaurant> {
+    private fun restaurantsByCountryConverter(restaurantsByCountry: RestaurantsByCountry?): List<Restaurant> {
         val list = mutableListOf<Restaurant>()
 
-        for (i in restaurantsByCountry.restaurants) {
+        for (i in restaurantsByCountry?.restaurants!!) {
             val restaurant = Restaurant(
                     i.id,
                     i.name,
                     i.address,
                     i.city,
-                    i.state,
+                    i?.state,
                     i.area,
                     i.postal_code,
                     i.country,
@@ -97,6 +97,10 @@ class ApiViewModel(private val repository: ApiRepository) : ViewModel() {
     suspend fun getCountries(): List<String> {
         val res = repository.getCountries()
         return countriesConverter(res)
+    }
+
+    suspend fun getRestaurantsById(id:Int): Restaurant {
+      return  repository.getRestaurantById(id)
     }
 
     private fun countriesConverter(country: CountryResponse) : List<String> {

@@ -38,6 +38,7 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
     private lateinit var restaurantViewModel: ApiViewModel
     private val daoViewModel: DaoViewModel by activityViewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
+    var page: Int = 1
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -50,11 +51,12 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
         val root = inflater.inflate(R.layout.fragment_restaurants, container, false)
 
         restaurantAdapter = RestaurantAdapter(daoViewModel, requireContext(), sharedViewModel)
-        restaurantAdapter.setData(SplashFragment.list)
+//        restaurantAdapter.setData(SplashFragment.list)
         restaurantList = root.findViewById(R.id.recyclerView)
         restaurantList.adapter = restaurantAdapter
         restaurantList.layoutManager = LinearLayoutManager(activity)
         restaurantList.setHasFixedSize(true)
+
 
         val searchbar = root.findViewById<SearchView>(R.id.searchView)
 
@@ -78,13 +80,13 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
             }
         })
 
-//        val cityList = mutableListOf("SELECT CITY")
-//        val countryList = mutableListOf("SELECT COUNTRY")
-//        cityList += Constants.cities
-//        countryList += Constants.countries
+        val cityList = mutableListOf("SELECT CITY")
+        val countryList = mutableListOf("SELECT COUNTRY")
+        cityList += Constants.cities
+        countryList += Constants.countries
 
-        val citySpinnerAdapter= ArrayAdapter(requireContext(), R.layout.spinner_item, Constants.cities)
-        val countrySpinnerAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, Constants.countries)
+        val citySpinnerAdapter= ArrayAdapter(requireContext(), R.layout.spinner_item, cityList)
+        val countrySpinnerAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, countryList)
 
         val citySpinner: Spinner = root.findViewById(R.id.spinner_city)
         val countrySpinner = root.findViewById<Spinner>(R.id.spinner_country)
@@ -101,13 +103,24 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
                 launch {
                     val repository = ApiRepository()
                     val factory = ApiViewModelFactory(repository)
-                    restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-                    restaurantViewModel.loadRestaurantsByCity(city)
-                    lateinit var list: List<Restaurant>
-                    restaurantViewModel.restaurantsByCity.observe(requireActivity(), { restaurants ->
-                        list = restaurants
-                        restaurantAdapter.setData(list)
-                    })
+                    if(city == "SELECT CITY") {
+                        restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
+                        restaurantViewModel.loadRestaurantsByCity("London", 1)
+                        lateinit var list: List<Restaurant>
+                        restaurantViewModel.restaurantsByCity.observe(requireActivity(), { restaurants ->
+                            list = restaurants
+                            restaurantAdapter.setData(list)
+                        })
+                    }
+                    else {
+                        restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
+                        restaurantViewModel.loadRestaurantsByCity(city, page)
+                        lateinit var list: List<Restaurant>
+                        restaurantViewModel.restaurantsByCity.observe(requireActivity(), { restaurants ->
+                            list = restaurants
+                            restaurantAdapter.setData(list)
+                        })
+                    }
                 }
             }
         }
@@ -119,12 +132,22 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
                     val repository = ApiRepository()
                     val factory = ApiViewModelFactory(repository)
                     restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-                    restaurantViewModel.loadRestaurantsByCountry(country)
-                    lateinit var list: List<Restaurant>
-                    restaurantViewModel.restaurantsByCountry.observe(requireActivity(), {
-                        rest -> list = rest
-                        restaurantAdapter.setData(list)
-                    })
+                    if(country == "SELECT COUNTRY") {
+                        restaurantViewModel.loadRestaurantsByCity("London", 1)
+                        lateinit var list: List<Restaurant>
+                        restaurantViewModel.restaurantsByCity.observe(requireActivity(), { restaurants ->
+                            list = restaurants
+                            restaurantAdapter.setData(list)
+                        })
+                    }
+                    else {
+                        restaurantViewModel.loadRestaurantsByCountry(country, page)
+                        lateinit var list: List<Restaurant>
+                        restaurantViewModel.restaurantsByCountry.observe(requireActivity(), { rest ->
+                            list = rest
+                            restaurantAdapter.setData(list)
+                        })
+                    }
                 }
             }
 
@@ -148,6 +171,9 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     navBar?.visibility = View.VISIBLE
                 }
+//                if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
+//                we are at hte bottom
+//                }
                 super.onScrollStateChanged(recyclerView, newState)
             }
         })

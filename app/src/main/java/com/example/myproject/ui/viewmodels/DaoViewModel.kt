@@ -13,15 +13,9 @@ import kotlinx.coroutines.launch
 
 
 class DaoViewModel(application: Application): AndroidViewModel(application) {
-
-    val readAllData: LiveData<List<Favorite>>
-    private val repository: RepositoryDao
-
-    init {
-        val restaurantDao = RestaurantRoomDatabase.getData(application).RestaurantDao()
-        repository = RepositoryDao(restaurantDao)
-        readAllData = repository.getAll
-    }
+    private val restaurantDao = RestaurantRoomDatabase.getData(application).RestaurantDao()
+    private val repository = RepositoryDao(restaurantDao)
+    val readAllData: LiveData<List<Favorite>> = repository.getAll
 
     fun addRestaurantDB(favorite: Favorite){
         viewModelScope.launch(Dispatchers.IO) {

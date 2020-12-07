@@ -8,7 +8,6 @@ import android.widget.*
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import androidx.sqlite.db.SimpleSQLiteQuery
 import com.bumptech.glide.Glide
 import com.example.firstapplication.R
 import com.example.myproject.models.Favorite
@@ -68,12 +67,12 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
 
             holder.favourite.setBackgroundResource(R.drawable.star_filled  )
             currentItem.setFav()
-
-
             fav = Favorite(currentItem.id,Constants.USER_ID)
             daoViewModel.addRestaurantDB(fav)
             //notifyDataSetChanged()
-            viewModel.addFav(Constants.USER_ID, currentItem)
+            if(!(viewModel.getUserFavorites(Constants.USER_ID).contains(currentItem)) ){
+                        viewModel.addFav(Constants.USER_ID, currentItem)
+                    }
 
             Snackbar.make(
                 holder.itemView,
@@ -86,8 +85,8 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
         holder.favourite.setOnLongClickListener {
 //            val favL = daoViewModel.readAllData
 //            Log.d("FAVDATA", favL.value.toString())
-            daoViewModel.deleteAll()
-            daoViewModel.vacuumDb(SimpleSQLiteQuery("VACUUM"))
+            fav = Favorite(currentItem.id,Constants.USER_ID)
+            daoViewModel.deleteRestaurantDB(fav)
             holder.favourite.setBackgroundResource(R.drawable.star)
             Snackbar.make(
                 holder.itemView,
@@ -112,7 +111,7 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
                     "reserve_url" to currentItem.reserve_url,
                     "mobile_reserve_url" to currentItem.mobile_reserve_url)
 
-            Toast.makeText(context, "Item $position clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Item ${currentItem.name} clicked", Toast.LENGTH_SHORT).show()
 
             holder.itemView.findNavController().navigate(R.id.navigation_details, bundle)
         }

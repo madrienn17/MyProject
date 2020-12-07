@@ -2,8 +2,15 @@ package com.example.myproject.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.example.myproject.models.Restaurant
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlin.coroutines.CoroutineContext
 
-class SharedViewModel : ViewModel() {
+class SharedViewModel() : ViewModel(), CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + Job()
 
     val favorited: HashMap<Long, ArrayList<Restaurant>> = hashMapOf()
 
