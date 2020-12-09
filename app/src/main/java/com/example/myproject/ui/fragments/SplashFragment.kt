@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
@@ -40,6 +41,12 @@ class SplashFragment : Fragment(), CoroutineScope {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val navBar: BottomNavigationView? = this.activity?.findViewById(R.id.nav_view)
         navBar!!.visibility = View.GONE
+
+        val loginButton: Button = view.findViewById(R.id.login_register)
+        loginButton.setOnClickListener{
+            findNavController().navigate(R.id.navigation_login)
+        }
+
         launch {
             val repository = ApiRepository()
             val factory = ApiViewModelFactory(repository)
@@ -52,20 +59,18 @@ class SplashFragment : Fragment(), CoroutineScope {
             Log.d("COUNTRIES ", Constants.countries.toString())
 
             withContext(Dispatchers.Main) {
-
-                    favoritesList = daoViewModel.readAllData
+                favoritesList = daoViewModel.readAllData
                 favoritesList!!.observe(requireActivity(),{
                     if( favoritesList != null) {
                         for (fav in favoritesList!!.value?.toList()!!) {
                             val converted = Restaurant()
                             convertFavToRestaurant(fav, converted)
-                           sharedViewModel.addFav(Constants.USER_ID, converted)
+                           sharedViewModel.addFav(Constants.USER_NAME, converted)
                         }
                     }
                 })
 
-                delay(3000)
-                findNavController().navigate(R.id.navigation_restaurants)
+               // delay(3000)
             }
         }
 

@@ -12,22 +12,24 @@ class SharedViewModel() : ViewModel(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + Job()
 
-    val favorited: HashMap<Long, ArrayList<Restaurant>> = hashMapOf()
+    var isLoggedIn = false
 
-    fun addFav(uId:Long, rest:Restaurant) {
-        var temp = favorited.get(uId)
+    val favorited: HashMap<String, ArrayList<Restaurant>> = hashMapOf()
+
+    fun addFav(uName:String, rest:Restaurant) {
+        var temp = favorited.get(uName)
         if(temp == null){
             temp = arrayListOf(rest)
-            favorited[uId] = temp
+            favorited[uName] = temp
         }
         else {
             temp.add(rest)
         }
     }
 
-    fun getUserFavorites(uId:Long): List<Restaurant> {
-        if(favorited.containsKey(uId)) {
-            return favorited.getValue(uId)
+    fun getUserFavorites(uName:String): List<Restaurant> {
+        if(favorited.containsKey(uName)) {
+            return favorited.getValue(uName)
         }
         return emptyList()
     }
@@ -39,4 +41,5 @@ class SharedViewModel() : ViewModel(), CoroutineScope {
             }
         }
     }
+
 }

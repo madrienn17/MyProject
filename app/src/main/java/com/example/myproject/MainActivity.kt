@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun restaurantToFav(favs: HashMap<Long, ArrayList<Restaurant>>) : ArrayList<Favorite> {
+    private fun restaurantToFav(favs: HashMap<String, ArrayList<Restaurant>>) : ArrayList<Favorite> {
         val fav :ArrayList<Favorite> = arrayListOf()
         for (f in favs) {
             for(r in f.value) {

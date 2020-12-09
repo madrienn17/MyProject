@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_navigation_add_restaurant_to_navigation_restaurants"
             app:destination="@id/navigation_restaurants" />
+        <action
+            android:id="@+id/action_navigation_splash_to_navigation_login"
+            app:destination="@id/navigation_login" />
     </fragment>
 
     <fragment
@@ -65,4 +68,22 @@
             android:id="@+id/action_navigation_favourites_to_navigation_profile"
             app:destination="@id/navigation_profile" />
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_register"
+        android:name="com.example.myproject.ui.fragments.RegisterFragment"
+        android:label="@string/register"
+        tools:layout="@layout/fragment_register">
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_login"
+        android:name="com.example.myproject.ui.fragments.LoginFragment"
+        android:label="@string/log_in"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_navigation_login_to_navigation_register"
+            app:destination="@id/navigation_register" />
+    </fragment>
+
 </navigation>

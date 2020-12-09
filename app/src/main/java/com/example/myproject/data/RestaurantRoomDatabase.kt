@@ -5,8 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.myproject.models.Favorite
+import com.example.myproject.models.User
 
-@Database(entities= [Favorite::class], version = 3, exportSchema = false)
+@Database(entities= [Favorite::class, User::class], version = 5, exportSchema = false)
 abstract class RestaurantRoomDatabase : RoomDatabase() {
     abstract fun RestaurantDao(): RestaurantDao
 
@@ -24,7 +25,7 @@ abstract class RestaurantRoomDatabase : RoomDatabase() {
                 val instanceLocal = Room.databaseBuilder(
                         context.applicationContext,
                         RestaurantRoomDatabase::class.java,
-                        "favorites"
+                        "wheretoeatdao"
                 ).fallbackToDestructiveMigration().build()
                 INSTANCE = instanceLocal
                 return instanceLocal

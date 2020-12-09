@@ -1,7 +1,6 @@
 package com.example.myproject.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +28,7 @@ class FavouritesFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_favourites_list, container, false)
 
         adapter = FavouritesAdapter(requireContext(),sharedViewModel)
-        adapter.setFav(Constants.USER_ID)
+        adapter.setFav(Constants.USER_NAME)
         favorites = root.findViewById(R.id.fav_list)
         favorites.adapter = adapter
         favorites.layoutManager = LinearLayoutManager(activity)

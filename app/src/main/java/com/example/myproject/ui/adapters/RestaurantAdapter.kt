@@ -67,11 +67,11 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
 
             holder.favourite.setBackgroundResource(R.drawable.star_filled  )
             currentItem.setFav()
-            fav = Favorite(currentItem.id,Constants.USER_ID)
+            fav = Favorite(currentItem.id,Constants.USER_NAME)
             daoViewModel.addRestaurantDB(fav)
             //notifyDataSetChanged()
-            if(!(viewModel.getUserFavorites(Constants.USER_ID).contains(currentItem)) ){
-                        viewModel.addFav(Constants.USER_ID, currentItem)
+            if(!(viewModel.getUserFavorites(Constants.USER_NAME).contains(currentItem)) ){
+                        viewModel.addFav(Constants.USER_NAME, currentItem)
                     }
 
             Snackbar.make(
@@ -85,7 +85,7 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
         holder.favourite.setOnLongClickListener {
 //            val favL = daoViewModel.readAllData
 //            Log.d("FAVDATA", favL.value.toString())
-            fav = Favorite(currentItem.id,Constants.USER_ID)
+            fav = Favorite(currentItem.id,Constants.USER_NAME)
             daoViewModel.deleteRestaurantDB(fav)
             holder.favourite.setBackgroundResource(R.drawable.star)
             Snackbar.make(

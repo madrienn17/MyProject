@@ -63,7 +63,7 @@ class ApiViewModel(private val repository: ApiRepository) : ViewModel() {
                     i.name,
                     i.address,
                     i.city,
-                    i?.state,
+                    i.state,
                     i.area,
                     i.postal_code,
                     i.country,

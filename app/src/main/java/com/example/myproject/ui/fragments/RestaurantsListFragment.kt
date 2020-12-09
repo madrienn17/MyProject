@@ -51,11 +51,11 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
         val root = inflater.inflate(R.layout.fragment_restaurants, container, false)
 
         restaurantAdapter = RestaurantAdapter(daoViewModel, requireContext(), sharedViewModel)
-//        restaurantAdapter.setData(SplashFragment.list)
         restaurantList = root.findViewById(R.id.recyclerView)
         restaurantList.adapter = restaurantAdapter
         restaurantList.layoutManager = LinearLayoutManager(activity)
         restaurantList.setHasFixedSize(true)
+
 
 
         val searchbar = root.findViewById<SearchView>(R.id.searchView)
@@ -155,7 +155,7 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
             }
         }
 
-        val arrayList = sharedViewModel.getUserFavorites(Constants.USER_ID)
+        val arrayList = sharedViewModel.getUserFavorites(Constants.USER_NAME)
         for (data in arrayList) {
             Log.d("FAV", data.toString())
         }

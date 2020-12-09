@@ -38,55 +38,50 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
-    <EditText
-        android:id="@+id/editTextTextPersonName"
+    <TextView
+        android:id="@+id/user_name_profile"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="11dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="@string/user_name"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTextPostalAddress"
+        app:layout_constraintBottom_toTopOf="@+id/address_profile"
         app:layout_constraintEnd_toStartOf="@+id/guidelineVertEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineVertStart"
         app:layout_constraintTop_toBottomOf="@+id/profilePic"
         android:autofillHints="" />
 
-    <EditText
-        android:id="@+id/editTextTextPostalAddress"
+    <TextView
+        android:id="@+id/address_profile"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPostalAddress"
-        android:hint="@string/details_address"
-        app:layout_constraintBottom_toTopOf="@+id/editTextPhone"
+        app:layout_constraintBottom_toTopOf="@+id/phone_profile"
         app:layout_constraintEnd_toStartOf="@+id/guidelineVertEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineVertStart"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+        app:layout_constraintTop_toBottomOf="@+id/user_name_profile"
+        android:autofillHints="" />
 
-    <EditText
-        android:id="@+id/editTextPhone"
+    <TextView
+        android:id="@+id/phone_profile"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="phone"
-        android:hint="@string/phone"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTextEmailAddress"
+        app:layout_constraintBottom_toTopOf="@+id/email_profile"
         app:layout_constraintEnd_toStartOf="@+id/guidelineVertEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineVertStart"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPostalAddress" />
+        app:layout_constraintTop_toBottomOf="@+id/address_profile"
+        android:autofillHints="" />
 
-    <EditText
-        android:id="@+id/editTextTextEmailAddress"
+    <TextView
+        android:id="@+id/email_profile"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textEmailAddress"
-        android:hint="@string/email"
         app:layout_constraintBottom_toTopOf="@+id/view_favourites"
         app:layout_constraintEnd_toStartOf="@+id/guidelineVertEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineVertStart"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPhone" />
+        app:layout_constraintTop_toBottomOf="@+id/phone_profile"
+        android:autofillHints="" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineVertStart"

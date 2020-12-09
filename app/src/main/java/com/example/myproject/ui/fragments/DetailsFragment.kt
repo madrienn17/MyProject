@@ -45,18 +45,20 @@ class DetailsFragment: Fragment() {
         val reserve_url = requireArguments().get("reserve_url").toString()
         val mobile_reserve_url = requireArguments().get("mobile_reserve_url").toString()
 
-        myView.findViewById<TextView>(R.id.details_name).text = name
-        myView.findViewById<TextView>(R.id.details_address).text = address
-        myView.findViewById<TextView>(R.id.details_city).text = city
-        myView.findViewById<TextView>(R.id.details_state).text = state
-        myView.findViewById<TextView>(R.id.details_area).text = area
-        myView.findViewById<TextView>(R.id.details_postalcode).text = postal_code
-        myView.findViewById<TextView>(R.id.details_country).text = country
-        myView.findViewById<TextView>(R.id.details_price).text = price
-        myView.findViewById<TextView>(R.id.details_reserve_url).text = reserve_url
-        myView.findViewById<TextView>(R.id.details_mobile_reserve_url).text = mobile_reserve_url
+        myView.apply {
+            findViewById<TextView>(R.id.details_name).text = name
+            findViewById<TextView>(R.id.details_address).text = address
+            findViewById<TextView>(R.id.details_city).text = city
+            findViewById<TextView>(R.id.details_state).text = state
+            findViewById<TextView>(R.id.details_area).text = area
+            findViewById<TextView>(R.id.details_postalcode).text = postal_code
+            findViewById<TextView>(R.id.details_country).text = country
+            findViewById<TextView>(R.id.details_price).text = price
+            findViewById<TextView>(R.id.details_reserve_url).text = reserve_url
+            findViewById<TextView>(R.id.details_mobile_reserve_url).text = mobile_reserve_url
+        }
 
-        val mapButton = myView.findViewById<ImageButton>(R.id.view_location_map)
+        val mapButton =myView.findViewById<ImageButton>(R.id.view_location_map)
 
         mapButton.setOnClickListener {
             val gmmIntentUri = Uri.parse("geo:$lat,$lng")

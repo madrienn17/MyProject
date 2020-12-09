@@ -27,17 +27,19 @@ public final class RestaurantRoomDatabase_Impl extends RestaurantRoomDatabase {
 
   @Override
   protected SupportSQLiteOpenHelper createOpenHelper(DatabaseConfiguration configuration) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(configuration, new RoomOpenHelper.Delegate(3) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(configuration, new RoomOpenHelper.Delegate(5) {
       @Override
       public void createAllTables(SupportSQLiteDatabase _db) {
-        _db.execSQL("CREATE TABLE IF NOT EXISTS `favorites` (`restId` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)");
+        _db.execSQL("CREATE TABLE IF NOT EXISTS `favorites` (`restId` INTEGER NOT NULL, `userName` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)");
+        _db.execSQL("CREATE TABLE IF NOT EXISTS `user` (`name` TEXT NOT NULL, `address` TEXT NOT NULL, `phone` TEXT NOT NULL, `email` TEXT NOT NULL, `password` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)");
         _db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0062f43e8b1857ef05beb081cf26efd8')");
+        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '04d14f95150988956c3bb4d1d2fe6999')");
       }
 
       @Override
       public void dropAllTables(SupportSQLiteDatabase _db) {
         _db.execSQL("DROP TABLE IF EXISTS `favorites`");
+        _db.execSQL("DROP TABLE IF EXISTS `user`");
         if (mCallbacks != null) {
           for (int _i = 0, _size = mCallbacks.size(); _i < _size; _i++) {
             mCallbacks.get(_i).onDestructiveMigration(_db);
@@ -78,7 +80,7 @@ public final class RestaurantRoomDatabase_Impl extends RestaurantRoomDatabase {
       protected RoomOpenHelper.ValidationResult onValidateSchema(SupportSQLiteDatabase _db) {
         final HashMap<String, TableInfo.Column> _columnsFavorites = new HashMap<String, TableInfo.Column>(3);
         _columnsFavorites.put("restId", new TableInfo.Column("restId", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsFavorites.put("userId", new TableInfo.Column("userId", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsFavorites.put("userName", new TableInfo.Column("userName", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsFavorites.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysFavorites = new HashSet<TableInfo.ForeignKey>(0);
         final HashSet<TableInfo.Index> _indicesFavorites = new HashSet<TableInfo.Index>(0);
@@ -89,9 +91,25 @@ public final class RestaurantRoomDatabase_Impl extends RestaurantRoomDatabase {
                   + " Expected:\n" + _infoFavorites + "\n"
                   + " Found:\n" + _existingFavorites);
         }
+        final HashMap<String, TableInfo.Column> _columnsUser = new HashMap<String, TableInfo.Column>(6);
+        _columnsUser.put("name", new TableInfo.Column("name", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUser.put("address", new TableInfo.Column("address", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUser.put("phone", new TableInfo.Column("phone", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUser.put("email", new TableInfo.Column("email", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUser.put("password", new TableInfo.Column("password", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUser.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        final HashSet<TableInfo.ForeignKey> _foreignKeysUser = new HashSet<TableInfo.ForeignKey>(0);
+        final HashSet<TableInfo.Index> _indicesUser = new HashSet<TableInfo.Index>(0);
+        final TableInfo _infoUser = new TableInfo("user", _columnsUser, _foreignKeysUser, _indicesUser);
+        final TableInfo _existingUser = TableInfo.read(_db, "user");
+        if (! _infoUser.equals(_existingUser)) {
+          return new RoomOpenHelper.ValidationResult(false, "user(com.example.myproject.models.User).\n"
+                  + " Expected:\n" + _infoUser + "\n"
+                  + " Found:\n" + _existingUser);
+        }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "0062f43e8b1857ef05beb081cf26efd8", "e988c3e13d496e8f7c954371faafab31");
+    }, "04d14f95150988956c3bb4d1d2fe6999", "3c7aaa9366b16efa43e05e590b643f6b");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(configuration.context)
         .name(configuration.name)
         .callback(_openCallback)
@@ -104,7 +122,7 @@ public final class RestaurantRoomDatabase_Impl extends RestaurantRoomDatabase {
   protected InvalidationTracker createInvalidationTracker() {
     final HashMap<String, String> _shadowTablesMap = new HashMap<String, String>(0);
     HashMap<String, Set<String>> _viewTables = new HashMap<String, Set<String>>(0);
-    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "favorites");
+    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "favorites","user");
   }
 
   @Override
@@ -114,6 +132,7 @@ public final class RestaurantRoomDatabase_Impl extends RestaurantRoomDatabase {
     try {
       super.beginTransaction();
       _db.execSQL("DELETE FROM `favorites`");
+      _db.execSQL("DELETE FROM `user`");
       super.setTransactionSuccessful();
     } finally {
       super.endTransaction();

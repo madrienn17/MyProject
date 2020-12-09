@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.myproject.data.RestaurantRoomDatabase
 import com.example.myproject.models.Favorite
+import com.example.myproject.models.User
 import com.example.myproject.repository.RepositoryDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,6 +17,7 @@ class DaoViewModel(application: Application): AndroidViewModel(application) {
     private val restaurantDao = RestaurantRoomDatabase.getData(application).RestaurantDao()
     private val repository = RepositoryDao(restaurantDao)
     val readAllData: LiveData<List<Favorite>> = repository.getAll
+    val readAllUsers: LiveData<List<User>> = repository.getAllUsers
 
     fun addRestaurantDB(favorite: Favorite){
         viewModelScope.launch(Dispatchers.IO) {
@@ -23,7 +25,7 @@ class DaoViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun deleteRestaurantDB(favorite: Favorite){
+    fun deleteRestaurantDB(favorite: Favorite) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteRestaurantDao(favorite)
         }
@@ -40,4 +42,17 @@ class DaoViewModel(application: Application): AndroidViewModel(application) {
             repository.vacuumDb(supportSQLiteQuery)
         }
     }
+
+    fun addUserDB(user: User) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.insertUser(user)
+        }
+    }
+
+    fun deleteAllUserDB() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllUsers()
+        }
+    }
+
 }

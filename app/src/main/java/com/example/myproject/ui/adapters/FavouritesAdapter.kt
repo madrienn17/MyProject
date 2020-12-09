@@ -1,7 +1,6 @@
 package com.example.myproject.ui.adapters
 
 import android.content.Context
-import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,6 @@ import com.bumptech.glide.Glide
 import com.example.firstapplication.R
 import com.example.myproject.models.Restaurant
 import com.example.myproject.ui.viewmodels.SharedViewModel
-import com.example.myproject.utils.Constants
 
 class FavouritesAdapter(private val context: Context, private val sharedViewModel: SharedViewModel) : RecyclerView.Adapter<FavouritesAdapter.MyViewHolder>() {
     private var favoritesList = emptyList<Restaurant>()
@@ -94,8 +92,8 @@ class FavouritesAdapter(private val context: Context, private val sharedViewMode
     }
     override fun getItemCount() = favoritesList.size
 
-    fun setFav(userId:Long) {
-        this.favoritesList = sharedViewModel.getUserFavorites(userId)
+    fun setFav(userName:String) {
+        this.favoritesList = sharedViewModel.getUserFavorites(userName)
         notifyDataSetChanged()
     }
 }
