@@ -50,17 +50,26 @@ class LoginFragment : Fragment() {
         userEmail = view.findViewById(R.id.user_email_login)
         userPassword = view.findViewById(R.id.password_login)
 
-        registerButton.setOnClickListener{
-            findNavController().navigate(R.id.navigation_register)
+        registerButton.isEnabled = false
+
+        registerButton.setOnClickListener {
+            val bundle = bundleOf(
+                    "email" to userEmail,
+                    "password" to userPassword
+            )
+            findNavController().navigate(R.id.navigation_register, bundle)
         }
 
         signinButton.setOnClickListener {
-            val currentUser = validUser(userEmail.text.toString(), userPassword.text.toString())
-                if(currentUser!= null) {
+            val isValid = validUser(userEmail.text.toString(), userPassword.text.toString())
+
+                if(isValid!= null) {
                     sharedViewModel.isLoggedIn = true
                     findNavController().navigate(R.id.navigation_restaurants, bundle)
                 }
                 else {
+                    signinButton.isEnabled = false
+                    registerButton.isEnabled = true
                     Toast.makeText(requireContext(), "You are not a registered user!",Toast.LENGTH_SHORT).show()
                 }
 
@@ -69,19 +78,20 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun validUser(email:String, password:String):User? {
-        for(i in users) {
-            if (i.email == email && i.password == password) {
-                bundle = bundleOf(
-                    "name" to i.name,
-                    "address" to i.address,
-                    "phone" to i.phone,
-                    "email" to i.email
-                )
-                RegisterFragment.setUser(i.name)
-                return i
+        fun validUser(email: String, password: String): User? {
+            for (i in users) {
+                if (i.email == email && i.password == password) {
+                    bundle = bundleOf(
+                            "name" to i.name,
+                            "address" to i.address,
+                            "phone" to i.phone,
+                            "email" to i.email
+                    )
+                    RegisterFragment.setUser(i.name)
+                    return i
+                }
             }
+            return null
         }
-        return null
-    }
+
 }

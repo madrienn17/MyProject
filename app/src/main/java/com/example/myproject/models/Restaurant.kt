@@ -39,7 +39,4 @@ data class Restaurant(
         this.mobile_reserve_url = mobile_reserve_url
         this.image_url = image_url
     }
-
-    var fav = false
-    fun setFav() = !fav
 }

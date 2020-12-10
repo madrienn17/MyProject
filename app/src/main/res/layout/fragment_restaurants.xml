@@ -5,9 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
+    android:orientation="vertical"
     tools:context="com.example.myproject.ui.fragments.RestaurantsListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -22,7 +22,7 @@
 
     <Spinner
         android:id="@+id/spinner_city"
-        android:layout_width="0dp"
+        android:layout_width="113dp"
         android:layout_height="wrap_content"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toTopOf="@+id/searchView"
@@ -32,19 +32,28 @@
 
     <Spinner
         android:id="@+id/spinner_country"
-        android:layout_width="0dp"
+        android:layout_width="153dp"
         android:layout_height="wrap_content"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toTopOf="@+id/searchView"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/spinner_price"
         app:layout_constraintStart_toEndOf="@+id/spinner_city"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinner_price"
+        android:layout_width="113dp"
+        android:layout_height="25dp"
+        app:layout_constraintBottom_toTopOf="@+id/searchView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/spinner_country"
         app:layout_constraintTop_toTopOf="parent" />
 
     <SearchView
         android:id="@+id/searchView"
-        android:queryHint="Enter restaurant name..."
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:queryHint="Enter restaurant name..."
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

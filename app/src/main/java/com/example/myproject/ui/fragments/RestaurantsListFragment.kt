@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.firstapplication.R
-import com.example.myproject.models.Restaurant
+import com.example.myproject.models.Favorite
 import com.example.myproject.repository.ApiRepository
 import com.example.myproject.ui.adapters.RestaurantAdapter
 import com.example.myproject.ui.viewmodels.ApiViewModel
@@ -34,6 +34,7 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + Job()
     private lateinit var restaurantList: RecyclerView
+    private var favorites: List<Favorite> = listOf()
     private lateinit var restaurantAdapter: RestaurantAdapter
     private lateinit var restaurantViewModel: ApiViewModel
     private val daoViewModel: DaoViewModel by activityViewModels()
@@ -52,11 +53,14 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
 
         restaurantAdapter = RestaurantAdapter(daoViewModel, requireContext(), sharedViewModel)
         restaurantList = root.findViewById(R.id.recyclerView)
+        val allFav = daoViewModel.readAllData
+        allFav.observe(viewLifecycleOwner, { us ->
+            favorites = us
+            restaurantAdapter.setFav(favorites)
+        })
         restaurantList.adapter = restaurantAdapter
         restaurantList.layoutManager = LinearLayoutManager(activity)
         restaurantList.setHasFixedSize(true)
-
-
 
         val searchbar = root.findViewById<SearchView>(R.id.searchView)
 
@@ -80,19 +84,26 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
             }
         })
 
-        val cityList = mutableListOf("SELECT CITY")
-        val countryList = mutableListOf("SELECT COUNTRY")
-        cityList += Constants.cities
-        countryList += Constants.countries
+        val cityList = mutableListOf("CITY")
+        val countryList = mutableListOf("COUNTRY")
+        val priceList = listOf<String>("$", "1", "2", "3", "4", "5")
+
+        if (Constants.cities != null) {
+            cityList += Constants.cities!!
+            countryList += Constants.countries!!
+        }
 
         val citySpinnerAdapter= ArrayAdapter(requireContext(), R.layout.spinner_item, cityList)
         val countrySpinnerAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, countryList)
+        val priceSpinnerAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, priceList)
 
         val citySpinner: Spinner = root.findViewById(R.id.spinner_city)
         val countrySpinner = root.findViewById<Spinner>(R.id.spinner_country)
+        val priceSpinner = root.findViewById<Spinner>(R.id.spinner_price)
 
         citySpinner.adapter = citySpinnerAdapter
         countrySpinner.adapter = countrySpinnerAdapter
+        priceSpinner.adapter = priceSpinnerAdapter
 
         citySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -103,23 +114,24 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
                 launch {
                     val repository = ApiRepository()
                     val factory = ApiViewModelFactory(repository)
-                    if(city == "SELECT CITY") {
+                    if(city == "CITY") {
                         restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-                        restaurantViewModel.loadRestaurantsByCity("London", 1)
-                        lateinit var list: List<Restaurant>
-                        restaurantViewModel.restaurantsByCity.observe(requireActivity(), { restaurants ->
-                            list = restaurants
-                            restaurantAdapter.setData(list)
-                        })
+                        val restbycityresp = restaurantViewModel.getRestaurantsByCity("Westminster", page)
+                        if (restbycityresp.isSuccessful) {
+                            restbycityresp.body()?.let { restaurantAdapter.setData(it.restaurants) }
+                        } else {
+                            restaurantAdapter.setData(Constants.emptyRest)
+                        }
                     }
                     else {
                         restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-                        restaurantViewModel.loadRestaurantsByCity(city, page)
-                        lateinit var list: List<Restaurant>
-                        restaurantViewModel.restaurantsByCity.observe(requireActivity(), { restaurants ->
-                            list = restaurants
-                            restaurantAdapter.setData(list)
-                        })
+                        val restbycityresp = restaurantViewModel.getRestaurantsByCity(city, page)
+                        if(restbycityresp.isSuccessful) {
+                            restbycityresp.body()?.restaurants?.let { restaurantAdapter.setData(it) }
+                        }
+                        else {
+                            restaurantAdapter.setData(Constants.emptyRest)
+                        }
                     }
                 }
             }
@@ -132,25 +144,50 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
                     val repository = ApiRepository()
                     val factory = ApiViewModelFactory(repository)
                     restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-                    if(country == "SELECT COUNTRY") {
-                        restaurantViewModel.loadRestaurantsByCity("London", 1)
-                        lateinit var list: List<Restaurant>
-                        restaurantViewModel.restaurantsByCity.observe(requireActivity(), { restaurants ->
-                            list = restaurants
-                            restaurantAdapter.setData(list)
-                        })
+                    if(country == "COUNTRY") {
+                        restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
+                        val restbycityresp = restaurantViewModel.getRestaurantsByCity("Westminster", page)
+                        if (restbycityresp.isSuccessful) {
+                            restbycityresp.body()?.let { restaurantAdapter.setData(it.restaurants) }
+                        } else {
+                            restaurantAdapter.setData(Constants.emptyRest)
+                        }
                     }
                     else {
-                        restaurantViewModel.loadRestaurantsByCountry(country, page)
-                        lateinit var list: List<Restaurant>
-                        restaurantViewModel.restaurantsByCountry.observe(requireActivity(), { rest ->
-                            list = rest
-                            restaurantAdapter.setData(list)
-                        })
+                        restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
+                        val restbycountryresp = restaurantViewModel.getRestaurantsByCountry(country, page)
+                        if(restbycountryresp.isSuccessful) {
+                            restbycountryresp.body()?.restaurants?.let { restaurantAdapter.setData(it) }
+                        }
+                        else {
+                            restaurantAdapter.setData(Constants.emptyRest)
+                        }
                     }
                 }
             }
 
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+
+        priceSpinner.onItemSelectedListener= object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val price: String = parent?.getItemAtPosition(position).toString()
+                if (price != "$") {
+                    launch {
+                        val repository = ApiRepository()
+                        val factory = ApiViewModelFactory(repository)
+                        restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
+
+                        val restbypriceresp = restaurantViewModel.getRestaurantsByPrice(price.toInt())
+                        if (restbypriceresp.isSuccessful) {
+                            restbypriceresp.body()?.restaurants?.let { restaurantAdapter.setData(it) }
+                        } else {
+                            restaurantAdapter.setData(Constants.emptyRest)
+                        }
+                    }
+                }
+            }
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }

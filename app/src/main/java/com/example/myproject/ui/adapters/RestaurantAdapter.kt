@@ -22,6 +22,7 @@ import java.util.*
 class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val viewModel:SharedViewModel): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(), Filterable{
     private var restaurantList = Collections.emptyList<Restaurant>()
     var searchableList: MutableList<Restaurant> = mutableListOf()
+    private var favorites: List<Favorite> = listOf()
     private lateinit var fav : Favorite
 
     inner class RestaurantViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -31,6 +32,7 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
         val price: TextView = itemView.findViewById(R.id.price)
         val favourite: ImageButton = itemView.findViewById(R.id.star)
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantViewHolder {
        val itemView = LayoutInflater.from(parent.context).inflate(
@@ -48,25 +50,20 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
                 .load(currentItem.image_url)
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .into(holder.image).view
-        holder.price.text = currentItem.price.toString()
+        holder.price.text = currentItem.price.times('$')
         holder.address.text = currentItem.address
         holder.name.text = currentItem.name
 
-        if(currentItem.fav) {
+        if (isFavoriteForCurr(currentItem)) {
             holder.favourite.setBackgroundResource(R.drawable.star_filled)
-        }
-        else{
-            holder.favourite.setBackgroundResource(R.drawable.star)
         }
 
         holder.favourite.setOnClickListener {
-
 //            Log.d("SHARED",viewModel.favorited.toString())
 //            val favL = daoViewModel.readAllData
 //            Log.d("FAVDATA", favL.value.toString())
 
-            holder.favourite.setBackgroundResource(R.drawable.star_filled  )
-            currentItem.setFav()
+            holder.favourite.setBackgroundResource(R.drawable.star_filled)
             fav = Favorite(currentItem.id,Constants.USER_NAME)
             daoViewModel.addRestaurantDB(fav)
             //notifyDataSetChanged()
@@ -104,7 +101,7 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
                     "area" to currentItem.area,
                     "postal_code" to currentItem.postal_code,
                     "country" to currentItem.country,
-                    "price" to currentItem.price,
+                    "price" to currentItem.price.times('$'),
                     "lat" to currentItem.lat,
                     "lng" to currentItem.lng,
                     "phone" to currentItem.phone,
@@ -122,6 +119,10 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
         this.restaurantList = restaurants
         this.searchableList = restaurants.toMutableList()
         notifyDataSetChanged()
+    }
+
+    fun setFav(favorites: List<Favorite>) {
+        this.favorites = favorites
     }
 
     override fun getFilter(): Filter {
@@ -155,4 +156,21 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
             }
         }
     }
+
+    fun isFavoriteForCurr(rest:Restaurant) : Boolean{
+        for (i in favorites) {
+            if (i.restId == rest.id && i.userName == Constants.USER_NAME) {
+                return true
+            }
+        }
+        return false
+    }
+}
+
+private fun Int.times(s: Char): String {
+    val result = StringBuffer("")
+    for (i in 1..this) {
+       result.append(s)
+    }
+    return result.toString()
 }

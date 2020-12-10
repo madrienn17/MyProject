@@ -1,11 +1,13 @@
 package com.example.myproject.ui.fragments
 
+
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
@@ -51,11 +53,20 @@ class SplashFragment : Fragment(), CoroutineScope {
             val repository = ApiRepository()
             val factory = ApiViewModelFactory(repository)
             restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-            Constants.cities = restaurantViewModel.getCities()
-            Constants.countries = restaurantViewModel.getCountries()
+
+            val cityResponse = restaurantViewModel.getCities()
+            val countryResponse = restaurantViewModel.getCountries()
+
+            if (cityResponse.isSuccessful && countryResponse.isSuccessful) {
+                Constants.cities = cityResponse.body()?.cities
+                Constants.countries = countryResponse.body()?.countries
+            }
+            else {
+                Toast.makeText(context,"Cannot load the data from API!",Toast.LENGTH_SHORT).show()
+                delay(5000)
+            }
 
             Log.d("CITIES ", Constants.cities.toString())
-            Log.d("CITYNR. ", Constants.cities.size.toString())
             Log.d("COUNTRIES ", Constants.countries.toString())
 
             withContext(Dispatchers.Main) {
@@ -79,23 +90,26 @@ class SplashFragment : Fragment(), CoroutineScope {
     private fun convertFavToRestaurant(favorite: Favorite,  converted:Restaurant) {
         val id = favorite.restId
         var restaurant: Restaurant
+        var r : Restaurant
 
         launch {
             val repository = ApiRepository()
             val factory = ApiViewModelFactory(repository)
             restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-            restaurant = restaurantViewModel.getRestaurantsById(id.toInt())
-            val r = restaurant
-            converted.setRest(r.id, r.name, r.address, r.city, r.state, r.area, r.postal_code, r.country,
-                    r.phone, r.lat, r.price, r.reserve_url, r.mobile_reserve_url, r.image_url)
+            val restresp = restaurantViewModel.getRestaurantsById(id.toInt())
+            if (restresp.isSuccessful) {
+                val respbody = restresp.body()
+                if (respbody != null) {
+                    restaurant = respbody
+                    r = restaurant
+                    converted.setRest(r.id, r.name, r.address, r.city, r.state, r.area, r.postal_code, r.country,
+                            r.phone, r.lat, r.price, r.reserve_url, r.mobile_reserve_url, r.image_url)
+                }
+            }
+            else {
+                Toast.makeText(context,"Cannot load favorites because of API!",Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
-//    companion object RestaurantsByCity {
-//        var list:List<Restaurant> = listOf()
-//    }
-//
-//    private fun setComp(li: List<Restaurant>) {
-//        list = li
-//    }
 }
