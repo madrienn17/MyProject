@@ -54,8 +54,8 @@ class LoginFragment : Fragment() {
 
         registerButton.setOnClickListener {
             val bundle = bundleOf(
-                    "email" to userEmail,
-                    "password" to userPassword
+                    "email" to userEmail.text.toString(),
+                    "password" to userPassword.text.toString()
             )
             findNavController().navigate(R.id.navigation_register, bundle)
         }

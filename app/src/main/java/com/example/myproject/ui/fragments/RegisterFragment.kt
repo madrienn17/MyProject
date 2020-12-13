@@ -10,7 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
@@ -47,13 +49,14 @@ class RegisterFragment : Fragment() {
         val userName = view.findViewById<EditText>(R.id.user_name)
         val userAddress = view.findViewById<EditText>(R.id.user_adress)
         val userPhone = view.findViewById<EditText>(R.id.user_phone)
-        var userPassword = view.findViewById<EditText>(R.id.password)
-        var userEmail = view.findViewById<EditText>(R.id.user_email)
+        val userPassword = view.findViewById<EditText>(R.id.password)
+        val userEmail = view.findViewById<EditText>(R.id.user_email)
 
         val bundledEmail = requireArguments().get("email").toString()
-        val bundledPassword = requireArguments().get("password")
+        val bundledPassword = requireArguments().get("password").toString()
 
-//        userEmail.text = bundledEmail
+        userEmail.setText(bundledEmail)
+        userPassword.setText(bundledPassword)
 
         val registerButton = view.findViewById<Button>(R.id.finish_registration)
 

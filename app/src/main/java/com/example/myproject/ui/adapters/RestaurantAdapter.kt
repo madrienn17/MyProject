@@ -73,7 +73,7 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
 
             Snackbar.make(
                 holder.itemView,
-                "Item ${currentItem.id} added to favourites",
+                "${currentItem.name} added to favourites",
                 Snackbar.LENGTH_SHORT
             ).show()
         }
@@ -87,7 +87,7 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
             holder.favourite.setBackgroundResource(R.drawable.star)
             Snackbar.make(
                 holder.itemView,
-                "Item ${currentItem.id} removed from favourites",
+                "${currentItem.name} removed from favourites",
                 Snackbar.LENGTH_SHORT
             ).show()
             true

@@ -41,7 +41,7 @@ class FavouritesAdapter(private val context: Context, private val sharedViewMode
             .load(currentItem.image_url)
             .placeholder(R.drawable.ic_launcher_foreground)
             .into(holder.image).view
-        holder.price.text = currentItem.price.toString()
+        holder.price.text = "$".repeat(currentItem.price)
         holder.address.text = currentItem.address
         holder.name.text = currentItem.name
 
@@ -55,14 +55,14 @@ class FavouritesAdapter(private val context: Context, private val sharedViewMode
                 "area" to currentItem.area,
                 "postal_code" to currentItem.postal_code,
                 "country" to currentItem.country,
-                "price" to currentItem.price,
+                "price" to "$".repeat(currentItem.price),
                 "lat" to currentItem.lat,
                 "lng" to currentItem.lng,
                 "phone" to currentItem.phone,
                 "reserve_url" to currentItem.reserve_url,
                 "mobile_reserve_url" to currentItem.mobile_reserve_url)
 
-            Toast.makeText(this.context, "Item $position clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this.context, "${currentItem.name} clicked", Toast.LENGTH_SHORT).show()
 
             holder.itemView.findNavController().navigate(R.id.navigation_details, bundle)
         }
@@ -77,7 +77,7 @@ class FavouritesAdapter(private val context: Context, private val sharedViewMode
                     ) { _, _ ->
                         sharedViewModel.removeFavorite(currentItem)
                         notifyDataSetChanged()
-                        Toast.makeText(context, "Item $position Deleted", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "${currentItem.name} deleted  ", Toast.LENGTH_SHORT).show()
                     }
                     setNegativeButton("No"
                     ) { _, _ ->
