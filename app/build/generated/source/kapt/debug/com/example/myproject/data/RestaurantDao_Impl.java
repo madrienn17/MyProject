@@ -15,6 +15,7 @@ import androidx.sqlite.db.SupportSQLiteStatement;
 import com.example.myproject.models.Favorite;
 import com.example.myproject.models.User;
 import java.lang.Exception;
+import java.lang.Long;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -232,6 +233,44 @@ public final class RestaurantDao_Impl implements RestaurantDao {
             final int _tmpId;
             _tmpId = _cursor.getInt(_cursorIndexOfId);
             _item = new Favorite(_tmpRestId,_tmpUserName,_tmpId);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+        }
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
+      }
+    });
+  }
+
+  @Override
+  public LiveData<List<Long>> getUserFavorites(final String userName) {
+    final String _sql = "SELECT restId FROM favorites WHERE UserName = ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    if (userName == null) {
+      _statement.bindNull(_argIndex);
+    } else {
+      _statement.bindString(_argIndex, userName);
+    }
+    return __db.getInvalidationTracker().createLiveData(new String[]{"favorites"}, false, new Callable<List<Long>>() {
+      @Override
+      public List<Long> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final List<Long> _result = new ArrayList<Long>(_cursor.getCount());
+          while(_cursor.moveToNext()) {
+            final Long _item;
+            if (_cursor.isNull(0)) {
+              _item = null;
+            } else {
+              _item = _cursor.getLong(0);
+            }
             _result.add(_item);
           }
           return _result;

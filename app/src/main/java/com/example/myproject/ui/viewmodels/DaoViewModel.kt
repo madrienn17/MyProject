@@ -55,4 +55,7 @@ class DaoViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    fun getUserFavorites(userName: String): LiveData<List<Long>>{
+            return repository.getUserFavorites(userName)
+    }
 }

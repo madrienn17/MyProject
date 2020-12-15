@@ -15,6 +15,9 @@ interface RestaurantApiService  {
     ): Response<Restaurant>
 
     @GET("restaurants")
+    suspend fun getAllRestaurants(): Response<RestaurantResponse>
+
+    @GET("restaurants")
     suspend fun getRestaurantByPrice(
             @Query("price")price:Int
     ): Response<RestaurantByPrice>

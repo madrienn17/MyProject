@@ -13,11 +13,14 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.firstapplication.R
+import com.example.myproject.MainActivity
+import com.example.myproject.models.Favorite
 import com.example.myproject.models.Restaurant
-import com.example.myproject.ui.viewmodels.SharedViewModel
+import com.example.myproject.ui.viewmodels.DaoViewModel
+import com.example.myproject.utils.Constants
 
-class FavouritesAdapter(private val context: Context, private val sharedViewModel: SharedViewModel) : RecyclerView.Adapter<FavouritesAdapter.MyViewHolder>() {
-    private var favoritesList = emptyList<Restaurant>()
+class FavouritesAdapter(private val context: Context, val daoViewModel: DaoViewModel) : RecyclerView.Adapter<FavouritesAdapter.MyViewHolder>() {
+    var favoritesList = emptyList<Restaurant>()
 
     inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val image: ImageView = itemView.findViewById(R.id.image)
@@ -75,7 +78,8 @@ class FavouritesAdapter(private val context: Context, private val sharedViewMode
                     setTitle("Are you sure you want to delete this item?")
                     setPositiveButton("Yes"
                     ) { _, _ ->
-                        sharedViewModel.removeFavorite(currentItem)
+                        val fav = Favorite(currentItem.id, Constants.USER_NAME)
+                        daoViewModel.deleteRestaurantDB(fav)
                         notifyDataSetChanged()
                         Toast.makeText(context, "${currentItem.name} deleted  ", Toast.LENGTH_SHORT).show()
                     }
@@ -93,7 +97,7 @@ class FavouritesAdapter(private val context: Context, private val sharedViewMode
     override fun getItemCount() = favoritesList.size
 
     fun setFav(userName:String) {
-        this.favoritesList = sharedViewModel.getUserFavorites(userName)
+        this.favoritesList = MainActivity.getUserFavorites(userName)
         notifyDataSetChanged()
     }
 }

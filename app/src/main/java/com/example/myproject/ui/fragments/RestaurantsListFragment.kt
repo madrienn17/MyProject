@@ -1,7 +1,6 @@
 package com.example.myproject.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +20,6 @@ import com.example.myproject.ui.adapters.RestaurantAdapter
 import com.example.myproject.ui.viewmodels.ApiViewModel
 import com.example.myproject.ui.viewmodels.ApiViewModelFactory
 import com.example.myproject.ui.viewmodels.DaoViewModel
-import com.example.myproject.ui.viewmodels.SharedViewModel
 import com.example.myproject.utils.Constants
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
@@ -38,7 +36,6 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
     private lateinit var restaurantAdapter: RestaurantAdapter
     private lateinit var restaurantViewModel: ApiViewModel
     private val daoViewModel: DaoViewModel by activityViewModels()
-    private val sharedViewModel: SharedViewModel by activityViewModels()
     var page: Int = 1
 
     override fun onCreateView(
@@ -51,7 +48,7 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
 
         val root = inflater.inflate(R.layout.fragment_restaurants, container, false)
 
-        restaurantAdapter = RestaurantAdapter(daoViewModel, requireContext(), sharedViewModel)
+        restaurantAdapter = RestaurantAdapter(daoViewModel, requireContext())
         restaurantList = root.findViewById(R.id.recyclerView)
         val allFav = daoViewModel.readAllData
         allFav.observe(viewLifecycleOwner, { us ->
@@ -86,7 +83,7 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
 
         val cityList = mutableListOf("CITY")
         val countryList = mutableListOf("COUNTRY")
-        val priceList = listOf<String>("$", "1", "2", "3", "4", "5")
+        val priceList = listOf("$", "1", "2", "3", "4", "5")
 
         if (Constants.cities != null) {
             cityList += Constants.cities!!
@@ -116,9 +113,9 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
                     val factory = ApiViewModelFactory(repository)
                     if(city == "CITY") {
                         restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-                        val restbycityresp = restaurantViewModel.getRestaurantsByCity("Westminster", page)
-                        if (restbycityresp.isSuccessful) {
-                            restbycityresp.body()?.let { restaurantAdapter.setData(it.restaurants) }
+                        val restresp = restaurantViewModel.getAllRestaurants()
+                        if (restresp.isSuccessful && restresp.body() != null) {
+                            restresp.body()?.let { restaurantAdapter.setData(it.restaurants) }
                         } else {
                             restaurantAdapter.setData(Constants.emptyRest)
                         }
@@ -146,9 +143,9 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
                     restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
                     if(country == "COUNTRY") {
                         restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-                        val restbycityresp = restaurantViewModel.getRestaurantsByCity("Westminster", page)
-                        if (restbycityresp.isSuccessful) {
-                            restbycityresp.body()?.let { restaurantAdapter.setData(it.restaurants) }
+                        val restresp = restaurantViewModel.getAllRestaurants()
+                        if (restresp.isSuccessful && restresp.body() != null) {
+                            restresp.body()?.let { restaurantAdapter.setData(it.restaurants) }
                         } else {
                             restaurantAdapter.setData(Constants.emptyRest)
                         }
@@ -192,10 +189,10 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
             }
         }
 
-        val arrayList = sharedViewModel.getUserFavorites(Constants.USER_NAME)
-        for (data in arrayList) {
-            Log.d("FAV", data.toString())
-        }
+//        val arrayList = sharedViewModel.getUserFavorites(Constants.USER_NAME)
+//        for (data in arrayList) {
+//            Log.d("FAV", data.toString())
+//        }
 
         restaurantList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

@@ -30,5 +30,8 @@ class ApiViewModel(private val repository: ApiRepository) : ViewModel() {
     suspend fun getRestaurantsByPrice(price:Int): Response<RestaurantByPrice> {
         return repository.getRestaurantByPrice(price)
     }
+    suspend fun getAllRestaurants(): Response<RestaurantResponse> {
+        return repository.getAllRestaurants()
+    }
 
 }

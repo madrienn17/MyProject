@@ -10,22 +10,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
-import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import com.example.firstapplication.R
+import com.example.myproject.MainActivity
 import com.example.myproject.models.User
 import com.example.myproject.ui.viewmodels.DaoViewModel
-import com.example.myproject.ui.viewmodels.SharedViewModel
 import com.example.myproject.utils.Constants
 
 class RegisterFragment : Fragment() {
     private val daoViewModel: DaoViewModel by activityViewModels()
-    private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var user: User
     lateinit var allUsers: LiveData<List<User>>
     lateinit var users:List<User>
@@ -79,7 +76,7 @@ class RegisterFragment : Fragment() {
                 Toast.makeText(context,"You are already resistered!",Toast.LENGTH_LONG).show()
             }
             else {
-                sharedViewModel.isLoggedIn = true
+                MainActivity.isLoggedIn = true
                 Log.d("REGISTERED", user.name)
                 daoViewModel.addUserDB(user)
                 setUser(user.name)

@@ -14,14 +14,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import com.example.firstapplication.R
+import com.example.myproject.MainActivity
 import com.example.myproject.models.User
 import com.example.myproject.ui.viewmodels.DaoViewModel
-import com.example.myproject.ui.viewmodels.SharedViewModel
 
 
 class LoginFragment : Fragment() {
     private val daoViewModel:DaoViewModel by activityViewModels()
-    private val sharedViewModel: SharedViewModel by activityViewModels()
     lateinit var userEmail:TextView
     lateinit var userPassword:TextView
     lateinit var allUsers:LiveData<List<User>>
@@ -64,7 +63,7 @@ class LoginFragment : Fragment() {
             val isValid = validUser(userEmail.text.toString(), userPassword.text.toString())
 
                 if(isValid!= null) {
-                    sharedViewModel.isLoggedIn = true
+                    MainActivity.isLoggedIn = true
                     findNavController().navigate(R.id.navigation_restaurants, bundle)
                 }
                 else {

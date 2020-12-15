@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_marginStart="40dp"
+    android:layout_marginTop="25sp"
     android:layout_marginEnd="40dp"
-    android:layout_marginBottom="20sp"
-    android:layout_marginTop="25sp">
+    android:layout_marginBottom="20sp">
 
     <TextView
         android:id="@+id/details_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="24dp"
         android:gravity="center_horizontal"
         android:text="@string/details_name"
         android:textSize="25sp"
@@ -87,9 +87,8 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/details_area"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/details_city"
         app:layout_constraintStart_toEndOf="@+id/img_state"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/details_city" />
 
     <ImageView
         android:id="@+id/img_area"
@@ -111,8 +110,8 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/details_postalcode"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/details_state"
-        app:layout_constraintStart_toEndOf="@+id/img_area"/>
+        app:layout_constraintStart_toEndOf="@+id/img_area"
+        app:layout_constraintTop_toBottomOf="@+id/details_state" />
 
     <ImageView
         android:id="@+id/img_postalcode"
@@ -133,8 +132,8 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/details_country"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/details_area"
-        app:layout_constraintStart_toEndOf="@+id/img_postalcode"/>
+        app:layout_constraintStart_toEndOf="@+id/img_postalcode"
+        app:layout_constraintTop_toBottomOf="@+id/details_area" />
 
     <ImageView
         android:id="@+id/img_country"
@@ -155,8 +154,8 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/details_price"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/details_postalcode"
-        app:layout_constraintStart_toEndOf="@+id/img_country"/>
+        app:layout_constraintStart_toEndOf="@+id/img_country"
+        app:layout_constraintTop_toBottomOf="@+id/details_postalcode" />
 
     <ImageView
         android:id="@+id/img_price"
@@ -177,8 +176,8 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/details_reserve_url"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/details_country"
-        app:layout_constraintStart_toEndOf="@+id/img_price"/>
+        app:layout_constraintStart_toEndOf="@+id/img_price"
+        app:layout_constraintTop_toBottomOf="@+id/details_country" />
 
     <ImageView
         android:id="@+id/img_reservation"
@@ -200,8 +199,8 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/details_mobile_reserve_url"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/details_price"
-        app:layout_constraintStart_toEndOf="@+id/img_reservation"/>
+        app:layout_constraintStart_toEndOf="@+id/img_reservation"
+        app:layout_constraintTop_toBottomOf="@+id/details_price" />
 
     <ImageView
         android:id="@+id/img_mobile_reservation"
@@ -224,38 +223,80 @@
         app:layout_constraintStart_toEndOf="@+id/img_mobile_reservation"
         app:layout_constraintTop_toBottomOf="@+id/details_reserve_url" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:barrierDirection="top"
+    <ImageButton
+        android:id="@+id/view_location_map"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/map"
+        android:contentDescription="@string/view_on_map"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/call_the_place"
+        app:layout_constraintTop_toBottomOf="@+id/details_mobile_reserve_url"
+        app:layout_constraintVertical_bias="0.115" />
 
     <ImageButton
         android:id="@+id/call_the_place"
-        android:layout_width="98dp"
-        android:layout_height="99dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:background="@drawable/telephone"
         android:contentDescription="@string/call_the_place"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/view_location_map"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/details_mobile_reserve_url"
-        app:layout_constraintVertical_bias="0.502" />
+        app:layout_constraintVertical_bias="0.115" />
 
-    <ImageButton
-        android:id="@+id/view_location_map"
-        android:layout_width="90dp"
-        android:layout_height="99dp"
-        android:background="@drawable/map"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addNewImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@+id/guideline5"
+        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+        app:layout_constraintStart_toStartOf="@+id/details_image"
+        app:layout_constraintTop_toTopOf="@+id/details_image"
+        app:srcCompat="@drawable/add" />
+
+    <ImageView
+        android:id="@+id/details_image"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/call_the_place"
-        app:layout_constraintTop_toBottomOf="@+id/details_mobile_reserve_url"
-        android:contentDescription="@string/view_on_map" />
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline3"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.56"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="801dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintGuide_percent="0.95"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="331dp"
+        android:layout_marginRight="331dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.97"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,13 +13,12 @@ import com.example.firstapplication.R
 import com.example.myproject.models.Favorite
 import com.example.myproject.models.Restaurant
 import com.example.myproject.ui.viewmodels.DaoViewModel
-import com.example.myproject.ui.viewmodels.SharedViewModel
 import com.example.myproject.utils.Constants
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
 
-class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val viewModel:SharedViewModel): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(), Filterable{
+class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(), Filterable{
     private var restaurantList = Collections.emptyList<Restaurant>()
     var searchableList: MutableList<Restaurant> = mutableListOf()
     private var favorites: List<Favorite> = listOf()
@@ -67,9 +66,10 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
             fav = Favorite(currentItem.id,Constants.USER_NAME)
             daoViewModel.addRestaurantDB(fav)
             //notifyDataSetChanged()
-            if(!(viewModel.getUserFavorites(Constants.USER_NAME).contains(currentItem)) ){
-                        viewModel.addFav(Constants.USER_NAME, currentItem)
-                    }
+            //todo(CHECK BETTERWAY TO DONT DUPLICATE)
+//            if(!(viewModel.getUserFavorites(Constants.USER_NAME).contains(currentItem)) ){
+//                        viewModel.addFav(Constants.USER_NAME, currentItem)
+//                    }
 
             Snackbar.make(
                 holder.itemView,
@@ -106,7 +106,8 @@ class RestaurantAdapter(val daoViewModel: DaoViewModel, val context:Context, val
                     "lng" to currentItem.lng,
                     "phone" to currentItem.phone,
                     "reserve_url" to currentItem.reserve_url,
-                    "mobile_reserve_url" to currentItem.mobile_reserve_url)
+                    "mobile_reserve_url" to currentItem.mobile_reserve_url,
+                    "image" to currentItem.image_url)
 
             Toast.makeText(context, "Item ${currentItem.name} clicked", Toast.LENGTH_SHORT).show()
 

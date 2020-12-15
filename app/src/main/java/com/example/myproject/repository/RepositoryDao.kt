@@ -33,4 +33,8 @@ class RepositoryDao(private val restaurant: RestaurantDao) {
     suspend fun deleteAllUsers() {
         restaurant.deleteAllUsers()
     }
+
+    fun getUserFavorites(userName:String): LiveData<List<Long>> {
+       return restaurant.getUserFavorites(userName)
+    }
 }

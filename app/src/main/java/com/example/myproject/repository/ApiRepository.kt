@@ -23,4 +23,7 @@ class ApiRepository {
     suspend fun getRestaurantByPrice(price:Int):Response<RestaurantByPrice>{
         return RestaurantApiClient.api.getRestaurantByPrice(price)
     }
+    suspend fun getAllRestaurants():Response<RestaurantResponse> {
+        return RestaurantApiClient.api.getAllRestaurants()
+    }
 }

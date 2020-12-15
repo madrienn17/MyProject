@@ -10,14 +10,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.firstapplication.R
 import com.example.myproject.ui.adapters.FavouritesAdapter
-import com.example.myproject.ui.viewmodels.SharedViewModel
+import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.example.myproject.utils.Constants
 
 class FavouritesFragment : Fragment() {
     private lateinit var favorites: RecyclerView
     private lateinit var adapter: FavouritesAdapter
-    // private val daoViewModel: DaoViewModel by activityViewModels()
-    private val sharedViewModel: SharedViewModel by activityViewModels()
+    private val daoViewModel: DaoViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,7 +26,7 @@ class FavouritesFragment : Fragment() {
 
         val root = inflater.inflate(R.layout.fragment_favourites_list, container, false)
 
-        adapter = FavouritesAdapter(requireContext(),sharedViewModel)
+        adapter = FavouritesAdapter(requireContext(),daoViewModel)
         adapter.setFav(Constants.USER_NAME)
         favorites = root.findViewById(R.id.fav_list)
         favorites.adapter = adapter
@@ -36,5 +35,4 @@ class FavouritesFragment : Fragment() {
 
         return root
     }
-
 }

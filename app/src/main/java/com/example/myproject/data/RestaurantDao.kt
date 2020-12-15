@@ -22,6 +22,8 @@ interface RestaurantDao {
     @RawQuery
     fun vacuumDb(supportSQLiteQuery: SupportSQLiteQuery): Int
 
+    @Query("SELECT restId FROM favorites WHERE UserName = :userName")
+    fun getUserFavorites(userName:String): LiveData<List<Long>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertUser(user: User)
