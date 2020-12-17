@@ -34,6 +34,13 @@ interface RestaurantApiService  {
         @Query("page")page:Int
     ): Response<RestaurantsByCountry>
 
+    @GET("restaurants")
+    suspend fun getRestaurantByPriceCityCountry(
+            @Query("price") price:Int?,
+            @Query("city") city:String?,
+            @Query("country") country: String?
+    ): Response<RestaurantResponse>
+
     @GET("cities")
     suspend fun getCities():Response<CityResponse>
 

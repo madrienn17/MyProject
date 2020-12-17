@@ -121,8 +121,12 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
                         }
                     }
                     else {
+                        var price:Int? = null
+                        if(priceSpinner.selectedItemPosition != 0) {
+                            price = priceSpinner.selectedItemPosition
+                        }
                         restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-                        val restbycityresp = restaurantViewModel.getRestaurantsByCity(city, page)
+                        val restbycityresp = restaurantViewModel.getRestaurantsByAll(price,city,null)
                         if(restbycityresp.isSuccessful) {
                             restbycityresp.body()?.restaurants?.let { restaurantAdapter.setData(it) }
                         }
@@ -152,7 +156,7 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
                     }
                     else {
                         restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-                        val restbycountryresp = restaurantViewModel.getRestaurantsByCountry(country, page)
+                        val restbycountryresp = restaurantViewModel.getRestaurantsByCountry(country, 1)
                         if(restbycountryresp.isSuccessful) {
                             restbycountryresp.body()?.restaurants?.let { restaurantAdapter.setData(it) }
                         }
@@ -171,12 +175,16 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val price: String = parent?.getItemAtPosition(position).toString()
                 if (price != "$") {
+                    var city:String? = null
+                    if(citySpinner.selectedItemPosition != 0) {
+                        city = citySpinner.selectedItem.toString()
+                    }
                     launch {
                         val repository = ApiRepository()
                         val factory = ApiViewModelFactory(repository)
                         restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
 
-                        val restbypriceresp = restaurantViewModel.getRestaurantsByPrice(price.toInt())
+                        val restbypriceresp = restaurantViewModel.getRestaurantsByAll(price.toInt(),city,null)
                         if (restbypriceresp.isSuccessful) {
                             restbypriceresp.body()?.restaurants?.let { restaurantAdapter.setData(it) }
                         } else {
@@ -189,11 +197,6 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
             }
         }
 
-//        val arrayList = sharedViewModel.getUserFavorites(Constants.USER_NAME)
-//        for (data in arrayList) {
-//            Log.d("FAV", data.toString())
-//        }
-
         restaurantList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0 || dy < 0 && navBar!!.isShown) {
@@ -205,9 +208,6 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     navBar?.visibility = View.VISIBLE
                 }
-//                if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
-//                we are at hte bottom
-//                }
                 super.onScrollStateChanged(recyclerView, newState)
             }
         })
