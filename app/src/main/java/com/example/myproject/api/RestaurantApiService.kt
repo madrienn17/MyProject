@@ -11,7 +11,7 @@ interface RestaurantApiService  {
 
     @GET("restaurants/{id}")
     suspend fun getRestaurantById(
-            @Path("id") id : Int
+            @Path("id") id : Long
     ): Response<Restaurant>
 
     @GET("restaurants")

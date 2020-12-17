@@ -9,15 +9,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.firstapplication.R
 import com.example.myproject.repository.ApiRepository
-import com.example.myproject.ui.adapters.FavouritesAdapter
 import com.example.myproject.ui.viewmodels.ApiViewModel
 import com.example.myproject.ui.viewmodels.ApiViewModelFactory
-import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.example.myproject.utils.Constants
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.*
@@ -26,8 +23,6 @@ import kotlin.coroutines.CoroutineContext
 
 class SplashFragment : Fragment(), CoroutineScope {
     private lateinit var restaurantViewModel: ApiViewModel
-    private val daoViewModel: DaoViewModel by activityViewModels()
-    private val favouritesAdapter = context?.let { FavouritesAdapter(it,daoViewModel) }
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + Job()
@@ -66,7 +61,7 @@ class SplashFragment : Fragment(), CoroutineScope {
             Log.d("COUNTRIES ", Constants.countries.toString())
 
             withContext(Dispatchers.Main) {
-                favouritesAdapter?.setFav(Constants.USER_NAME)
+
             }
         }
     }

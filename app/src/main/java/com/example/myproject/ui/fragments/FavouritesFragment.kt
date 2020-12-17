@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.firstapplication.R
+import com.example.myproject.MainActivity
 import com.example.myproject.ui.adapters.FavouritesAdapter
 import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.example.myproject.utils.Constants
@@ -27,11 +28,20 @@ class FavouritesFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_favourites_list, container, false)
 
         adapter = FavouritesAdapter(requireContext(),daoViewModel)
-        adapter.setFav(Constants.USER_NAME)
         favorites = root.findViewById(R.id.fav_list)
         favorites.adapter = adapter
         favorites.layoutManager = LinearLayoutManager(activity)
         favorites.setHasFixedSize(true)
+
+        if(MainActivity.isLoggedIn) {
+            val favs = daoViewModel.getUserFavorites(Constants.USER_NAME)
+
+            favs.observe(viewLifecycleOwner, { us ->
+                Constants.favoritIds = us
+                FavouritesAdapter.getRestListByid(Constants.favoritIds)
+                adapter.setFav(FavouritesAdapter.restFavs)
+            })
+        }
 
         return root
     }

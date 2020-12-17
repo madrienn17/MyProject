@@ -17,12 +17,10 @@ class ApiRepository {
     suspend fun getCountries(): Response<CountryResponse> {
         return RestaurantApiClient.api.getCountries()
     }
-    suspend fun getRestaurantById(id:Int):Response<Restaurant> {
+    suspend fun getRestaurantById(id:Long):Response<Restaurant> {
         return RestaurantApiClient.api.getRestaurantById(id)
     }
-    suspend fun getRestaurantByPrice(price:Int):Response<RestaurantByPrice>{
-        return RestaurantApiClient.api.getRestaurantByPrice(price)
-    }
+
     suspend fun getAllRestaurants():Response<RestaurantResponse> {
         return RestaurantApiClient.api.getAllRestaurants()
     }

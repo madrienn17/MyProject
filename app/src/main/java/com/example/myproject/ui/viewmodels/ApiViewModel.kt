@@ -23,13 +23,10 @@ class ApiViewModel(private val repository: ApiRepository) : ViewModel() {
         return repository.getCountries()
     }
 
-    suspend fun getRestaurantsById(id:Int): Response<Restaurant> {
+    suspend fun getRestaurantsById(id:Long): Response<Restaurant> {
       return  repository.getRestaurantById(id)
     }
 
-    suspend fun getRestaurantsByPrice(price:Int): Response<RestaurantByPrice> {
-        return repository.getRestaurantByPrice(price)
-    }
     suspend fun getAllRestaurants(): Response<RestaurantResponse> {
         return repository.getAllRestaurants()
     }

@@ -1,6 +1,7 @@
 package com.example.myproject.ui.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,15 +10,24 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.firstapplication.R
-import com.example.myproject.MainActivity
 import com.example.myproject.models.Favorite
 import com.example.myproject.models.Restaurant
+import com.example.myproject.repository.ApiRepository
+import com.example.myproject.ui.viewmodels.ApiViewModel
+import com.example.myproject.ui.viewmodels.ApiViewModelFactory
 import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.example.myproject.utils.Constants
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 class FavouritesAdapter(private val context: Context, val daoViewModel: DaoViewModel) : RecyclerView.Adapter<FavouritesAdapter.MyViewHolder>() {
     var favoritesList = emptyList<Restaurant>()
@@ -34,6 +44,7 @@ class FavouritesAdapter(private val context: Context, val daoViewModel: DaoViewM
             R.layout.favourites_item_row,
             parent, false
         )
+        Companion.context = context
         return MyViewHolder(itemView)
     }
 
@@ -63,7 +74,10 @@ class FavouritesAdapter(private val context: Context, val daoViewModel: DaoViewM
                 "lng" to currentItem.lng,
                 "phone" to currentItem.phone,
                 "reserve_url" to currentItem.reserve_url,
-                "mobile_reserve_url" to currentItem.mobile_reserve_url)
+                "mobile_reserve_url" to currentItem.mobile_reserve_url,
+                "image" to currentItem.image_url
+                )
+
 
             Toast.makeText(this.context, "${currentItem.name} clicked", Toast.LENGTH_SHORT).show()
 
@@ -96,8 +110,50 @@ class FavouritesAdapter(private val context: Context, val daoViewModel: DaoViewM
     }
     override fun getItemCount() = favoritesList.size
 
-    fun setFav(userName:String) {
-        this.favoritesList = MainActivity.getUserFavorites(userName)
+    fun setFav(favs:List<Restaurant>) {
+        this.favoritesList = favs
+        Log.d("SETFAVLIST", favoritesList.toString())
         notifyDataSetChanged()
+    }
+
+    companion object: CoroutineScope {
+        var restFavs = emptyList<Restaurant>()
+
+        lateinit var context: Context
+        lateinit var restaurantViewModel: ApiViewModel
+
+        override val coroutineContext: CoroutineContext
+            get() =  Dispatchers.Main + Job()
+
+        fun getRestListByid(favIds: List<Long>) {
+            var favrests: MutableList<Restaurant> = mutableListOf()
+            launch {
+                val repository = ApiRepository()
+                val factory = ApiViewModelFactory(repository)
+                restaurantViewModel =
+                    ViewModelProvider(ViewModelStore(), factory).get(ApiViewModel::class.java)
+                if (favIds.isNotEmpty()) {
+                    for (i in favIds) {
+                        val restresp = restaurantViewModel.getRestaurantsById(i)
+                        if (restresp.isSuccessful && restresp.body() != null) {
+                            val respbody = restresp.body()
+                            if (respbody != null) {
+                                favrests.add(respbody)
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Cannot load favorites because of API!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                break
+                            }
+                        }
+                    }
+                } else {
+                    favrests = Constants.emptyRest.toMutableList()
+                }
+                restFavs = favrests.toList()
+            }
+        }
     }
 }

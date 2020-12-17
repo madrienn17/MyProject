@@ -14,13 +14,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.firstapplication.R
-import com.example.myproject.models.Favorite
+import com.example.myproject.MainActivity
 import com.example.myproject.repository.ApiRepository
+import com.example.myproject.ui.adapters.FavouritesAdapter
 import com.example.myproject.ui.adapters.RestaurantAdapter
 import com.example.myproject.ui.viewmodels.ApiViewModel
 import com.example.myproject.ui.viewmodels.ApiViewModelFactory
 import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.example.myproject.utils.Constants
+import com.example.myproject.utils.Constants.Companion.favoritIds
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +34,7 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + Job()
     private lateinit var restaurantList: RecyclerView
-    private var favorites: List<Favorite> = listOf()
+    private lateinit var favouritesAdapter: FavouritesAdapter
     private lateinit var restaurantAdapter: RestaurantAdapter
     private lateinit var restaurantViewModel: ApiViewModel
     private val daoViewModel: DaoViewModel by activityViewModels()
@@ -49,15 +51,22 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
         val root = inflater.inflate(R.layout.fragment_restaurants, container, false)
 
         restaurantAdapter = RestaurantAdapter(daoViewModel, requireContext())
+        favouritesAdapter = FavouritesAdapter(requireContext(),daoViewModel)
         restaurantList = root.findViewById(R.id.recyclerView)
-        val allFav = daoViewModel.readAllData
-        allFav.observe(viewLifecycleOwner, { us ->
-            favorites = us
-            restaurantAdapter.setFav(favorites)
-        })
         restaurantList.adapter = restaurantAdapter
         restaurantList.layoutManager = LinearLayoutManager(activity)
         restaurantList.setHasFixedSize(true)
+
+        if(MainActivity.isLoggedIn) {
+            val favs = daoViewModel.getUserFavorites(Constants.USER_NAME)
+
+            favs.observe(viewLifecycleOwner, { us ->
+                favoritIds = us
+                //Log.d("FAVORITIDS", favoritIds.toString())
+                FavouritesAdapter.getRestListByid(favoritIds)
+                favouritesAdapter.setFav(FavouritesAdapter.restFavs)
+            })
+        }
 
         val searchbar = root.findViewById<SearchView>(R.id.searchView)
 
