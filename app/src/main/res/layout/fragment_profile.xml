@@ -32,8 +32,10 @@
         android:id="@+id/profilePic"
         android:layout_width="150dp"
         android:layout_height="150dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/user"
         android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/user_name_profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
@@ -107,5 +109,19 @@
         app:layout_constraintEnd_toStartOf="@+id/guidelineVertEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineVertStart"
         app:layout_constraintTop_toBottomOf="@+id/profilePic" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_user_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/profilePic"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineVertEnd"
+        app:layout_constraintHorizontal_bias="0.66"
+        app:layout_constraintStart_toStartOf="@+id/profilePic"
+        app:layout_constraintTop_toTopOf="@+id/profilePic"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/ic_baseline_add_a_photo_24"
+        android:focusable="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

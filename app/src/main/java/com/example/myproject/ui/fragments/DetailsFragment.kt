@@ -105,7 +105,7 @@ class DetailsFragment: Fragment() {
                 if (checkSelfPermission(requireContext(),Manifest.permission.READ_EXTERNAL_STORAGE) ==
                     PermissionChecker.PERMISSION_DENIED){
                     //permission denied
-                    val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE);
+                    val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                     //show popup to request runtime permission
                     requestPermissions(permissions, PERMISSION_CODE)
                 }
@@ -123,7 +123,7 @@ class DetailsFragment: Fragment() {
        return myView
     }
 
-    fun openGallery() {
+    private fun openGallery() {
         //Intent to pick image
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
@@ -155,8 +155,8 @@ class DetailsFragment: Fragment() {
 
     companion object {
         //image pick code
-        private val IMAGE_PICK_CODE = 1000;
+        const val IMAGE_PICK_CODE = 1000
         //Permission code
-        private val PERMISSION_CODE = 1001;
+        const val PERMISSION_CODE = 1001
     }
 }

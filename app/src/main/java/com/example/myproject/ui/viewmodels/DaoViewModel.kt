@@ -31,9 +31,9 @@ class DaoViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun deleteAll(){
+    fun deleteAllFavs(){
         viewModelScope.launch(Dispatchers.IO) {
-            repository.clearAll()
+            repository.deleteFavorites()
         }
     }
 

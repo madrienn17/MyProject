@@ -18,11 +18,11 @@ class RepositoryDao(private val restaurant: RestaurantDao) {
         restaurant.deleteRestaurantDao(favorite)
     }
 
-    suspend fun clearAll() {
+    suspend fun deleteFavorites() {
         restaurant.deleteAllFavorites()
     }
 
-    suspend fun vacuumDb(supportSQLiteQuery: SupportSQLiteQuery): Int {
+    fun vacuumDb(supportSQLiteQuery: SupportSQLiteQuery): Int {
         return restaurant.vacuumDb(supportSQLiteQuery)
     }
 

@@ -77,20 +77,19 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-        fun validUser(email: String, password: String): User? {
-            for (i in users) {
-                if (i.email == email && i.password == password) {
-                    bundle = bundleOf(
-                            "name" to i.name,
-                            "address" to i.address,
-                            "phone" to i.phone,
-                            "email" to i.email
-                    )
-                    RegisterFragment.setUser(i.name)
-                    return i
-                }
+    private fun validUser(email: String, password: String): User? {
+        for (i in users) {
+            if (i.email == email && i.password == password) {
+                bundle = bundleOf(
+                        "name" to i.name,
+                        "address" to i.address,
+                        "phone" to i.phone,
+                        "email" to i.email
+                )
+                RegisterFragment.setUser(i.name)
+                return i
             }
-            return null
         }
-
+        return null
+    }
 }

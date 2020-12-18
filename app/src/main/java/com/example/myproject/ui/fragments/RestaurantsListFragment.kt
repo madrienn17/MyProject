@@ -223,5 +223,4 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
 
         return root
     }
-
 }

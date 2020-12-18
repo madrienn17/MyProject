@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_restaurants, R.id.navigation_splash, R.id.navigation_details, R.id.navigation_profile))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-        hideSystemUI()
+       // hideSystemUI()
     }
     override fun onSupportNavigateUp(): Boolean {
         val navController = this.findNavController(R.id.nav_host_fragment)
