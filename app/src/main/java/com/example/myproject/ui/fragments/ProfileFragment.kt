@@ -5,11 +5,16 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Base64
 import android.util.Log
 import android.view.*
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.PermissionChecker
@@ -21,11 +26,14 @@ import com.bumptech.glide.Glide
 import com.example.firstapplication.R
 import com.example.myproject.MainActivity
 import com.example.myproject.models.User
+import com.example.myproject.models.UserPic
 import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.example.myproject.utils.Constants
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.fragment_profile.*
+
+import java.io.ByteArrayOutputStream
+
 
 class ProfileFragment : Fragment() {
     private val daoViewModel: DaoViewModel by activityViewModels()
@@ -35,8 +43,11 @@ class ProfileFragment : Fragment() {
     private lateinit var phone :TextView
     private lateinit var email :TextView
     private lateinit var floatButton: FloatingActionButton
+    private lateinit var profile: ImageView
     lateinit var allUsers: LiveData<List<User>>
     lateinit var users:List<User>
+    lateinit var allUserPic: LiveData<List<UserPic>>
+    var userPics: List<UserPic> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val navBar: BottomNavigationView? = this.activity?.findViewById(R.id.nav_view)
@@ -45,18 +56,26 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
 
         allUsers = daoViewModel.readAllUsers
+        allUserPic = daoViewModel.readAllUserPic
+        allUserPic.observe(viewLifecycleOwner, { us ->
+            userPics = us
+            getProfilePicture()
+            //Log.d("Profiledata", userPics.toString())
+        })
 
         allUsers.observe(viewLifecycleOwner, { us ->
             users = us
             Log.d("USERS", users.toString())
             setProfileData()
         })
+
+
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
@@ -69,6 +88,7 @@ class ProfileFragment : Fragment() {
             phone = findViewById(R.id.phone_profile)
             email = findViewById(R.id.email_profile)
             floatButton = findViewById(R.id.add_user_image)
+            profile = findViewById(R.id.profilePic)
         }
 
         button = view.findViewById(R.id.view_favourites)
@@ -99,11 +119,27 @@ class ProfileFragment : Fragment() {
 
     private fun setProfileData() {
         for (i in users) {
-            if(i.name == Constants.USER_NAME) {
+            if(i.name == Constants.USER_NAME && MainActivity.isLoggedIn) {
                 name.text = i.name
                 address.text = i.address
                 phone.text = i.phone
                 email.text = i.email
+            }
+        }
+    }
+
+    private fun getProfilePicture() {
+        if(userPics.isNotEmpty()) {
+            for (i in userPics) {
+                if (i.userName == Constants.USER_NAME) {
+                    val imageBytes = Base64.decode(i.userPic, Base64.DEFAULT)
+                    Log.d("IMAGEBYTES", imageBytes.toString())
+                    val decocdedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                    Glide.with(requireContext())
+                            .load(decocdedImage)
+                            .circleCrop()
+                            .into(profile)
+                }
             }
         }
     }
@@ -119,11 +155,10 @@ class ProfileFragment : Fragment() {
         when(requestCode){
             DetailsFragment.PERMISSION_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] ==
-                        PackageManager.PERMISSION_GRANTED){
+                        PackageManager.PERMISSION_GRANTED) {
                     //permission from popup granted
                     openGallery()
-                }
-                else{
+                } else {
                     //permission from popup denied
                     Toast.makeText(requireContext(), "Permission denied", Toast.LENGTH_SHORT).show()
                 }
@@ -137,7 +172,15 @@ class ProfileFragment : Fragment() {
             Glide.with(requireContext())
                     .load(data?.data)
                     .circleCrop()
-                    .into(profilePic)
+                    .into(profile)
+
+            val baos = ByteArrayOutputStream()
+            @SuppressWarnings("deprecation")
+            val bitmap:Bitmap = MediaStore.Images.Media.getBitmap(context?.contentResolver, data?.data)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val imageBytes:ByteArray = baos.toByteArray()
+            val imgString:String = Base64.encodeToString(imageBytes, Base64.DEFAULT)
+            daoViewModel.insertUserPic(UserPic(Constants.USER_NAME, imgString))
         }
     }
 

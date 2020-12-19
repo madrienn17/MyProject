@@ -10,11 +10,13 @@ import android.widget.SearchView
 import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.firstapplication.R
 import com.example.myproject.MainActivity
+import com.example.myproject.models.RestaurantPic
 import com.example.myproject.repository.ApiRepository
 import com.example.myproject.ui.adapters.FavouritesAdapter
 import com.example.myproject.ui.adapters.RestaurantAdapter
@@ -37,6 +39,8 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
     private lateinit var favouritesAdapter: FavouritesAdapter
     private lateinit var restaurantAdapter: RestaurantAdapter
     private lateinit var restaurantViewModel: ApiViewModel
+    lateinit var allRestPic: LiveData<List<RestaurantPic>>
+    var restPics: List<RestaurantPic> = listOf()
     private val daoViewModel: DaoViewModel by activityViewModels()
     var page: Int = 1
 
@@ -49,6 +53,13 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
 
 
         val root = inflater.inflate(R.layout.fragment_restaurants, container, false)
+
+        allRestPic = daoViewModel.readAllRestPic
+
+        allRestPic.observe(viewLifecycleOwner, { us ->
+            restPics = us
+            saveToComp()
+        })
 
         restaurantAdapter = RestaurantAdapter(daoViewModel, requireContext())
         favouritesAdapter = FavouritesAdapter(requireContext(),daoViewModel)
@@ -222,5 +233,13 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
         })
 
         return root
+    }
+
+    private fun saveToComp() {
+        Companion.restPics = restPics
+    }
+
+    companion object{
+        lateinit var restPics:List<RestaurantPic>
     }
 }

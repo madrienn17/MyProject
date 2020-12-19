@@ -27,19 +27,23 @@ public final class RestaurantRoomDatabase_Impl extends RestaurantRoomDatabase {
 
   @Override
   protected SupportSQLiteOpenHelper createOpenHelper(DatabaseConfiguration configuration) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(configuration, new RoomOpenHelper.Delegate(5) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(configuration, new RoomOpenHelper.Delegate(7) {
       @Override
       public void createAllTables(SupportSQLiteDatabase _db) {
         _db.execSQL("CREATE TABLE IF NOT EXISTS `favorites` (`restId` INTEGER NOT NULL, `userName` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)");
         _db.execSQL("CREATE TABLE IF NOT EXISTS `user` (`name` TEXT NOT NULL, `address` TEXT NOT NULL, `phone` TEXT NOT NULL, `email` TEXT NOT NULL, `password` TEXT NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)");
+        _db.execSQL("CREATE TABLE IF NOT EXISTS `userPic` (`userName` TEXT NOT NULL, `userPic` TEXT NOT NULL, `uPicId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)");
+        _db.execSQL("CREATE TABLE IF NOT EXISTS `restaurantPic` (`restName` TEXT NOT NULL, `restPic` BLOB NOT NULL, `restPicId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)");
         _db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '04d14f95150988956c3bb4d1d2fe6999')");
+        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c7c2276b4bdf2a18e26948cd68f4ebf3')");
       }
 
       @Override
       public void dropAllTables(SupportSQLiteDatabase _db) {
         _db.execSQL("DROP TABLE IF EXISTS `favorites`");
         _db.execSQL("DROP TABLE IF EXISTS `user`");
+        _db.execSQL("DROP TABLE IF EXISTS `userPic`");
+        _db.execSQL("DROP TABLE IF EXISTS `restaurantPic`");
         if (mCallbacks != null) {
           for (int _i = 0, _size = mCallbacks.size(); _i < _size; _i++) {
             mCallbacks.get(_i).onDestructiveMigration(_db);
@@ -107,9 +111,35 @@ public final class RestaurantRoomDatabase_Impl extends RestaurantRoomDatabase {
                   + " Expected:\n" + _infoUser + "\n"
                   + " Found:\n" + _existingUser);
         }
+        final HashMap<String, TableInfo.Column> _columnsUserPic = new HashMap<String, TableInfo.Column>(3);
+        _columnsUserPic.put("userName", new TableInfo.Column("userName", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUserPic.put("userPic", new TableInfo.Column("userPic", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUserPic.put("uPicId", new TableInfo.Column("uPicId", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        final HashSet<TableInfo.ForeignKey> _foreignKeysUserPic = new HashSet<TableInfo.ForeignKey>(0);
+        final HashSet<TableInfo.Index> _indicesUserPic = new HashSet<TableInfo.Index>(0);
+        final TableInfo _infoUserPic = new TableInfo("userPic", _columnsUserPic, _foreignKeysUserPic, _indicesUserPic);
+        final TableInfo _existingUserPic = TableInfo.read(_db, "userPic");
+        if (! _infoUserPic.equals(_existingUserPic)) {
+          return new RoomOpenHelper.ValidationResult(false, "userPic(com.example.myproject.models.UserPic).\n"
+                  + " Expected:\n" + _infoUserPic + "\n"
+                  + " Found:\n" + _existingUserPic);
+        }
+        final HashMap<String, TableInfo.Column> _columnsRestaurantPic = new HashMap<String, TableInfo.Column>(3);
+        _columnsRestaurantPic.put("restName", new TableInfo.Column("restName", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsRestaurantPic.put("restPic", new TableInfo.Column("restPic", "BLOB", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsRestaurantPic.put("restPicId", new TableInfo.Column("restPicId", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        final HashSet<TableInfo.ForeignKey> _foreignKeysRestaurantPic = new HashSet<TableInfo.ForeignKey>(0);
+        final HashSet<TableInfo.Index> _indicesRestaurantPic = new HashSet<TableInfo.Index>(0);
+        final TableInfo _infoRestaurantPic = new TableInfo("restaurantPic", _columnsRestaurantPic, _foreignKeysRestaurantPic, _indicesRestaurantPic);
+        final TableInfo _existingRestaurantPic = TableInfo.read(_db, "restaurantPic");
+        if (! _infoRestaurantPic.equals(_existingRestaurantPic)) {
+          return new RoomOpenHelper.ValidationResult(false, "restaurantPic(com.example.myproject.models.RestaurantPic).\n"
+                  + " Expected:\n" + _infoRestaurantPic + "\n"
+                  + " Found:\n" + _existingRestaurantPic);
+        }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "04d14f95150988956c3bb4d1d2fe6999", "3c7aaa9366b16efa43e05e590b643f6b");
+    }, "c7c2276b4bdf2a18e26948cd68f4ebf3", "1fb9349311218931c2fc9f39d6ab61a8");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(configuration.context)
         .name(configuration.name)
         .callback(_openCallback)
@@ -122,7 +152,7 @@ public final class RestaurantRoomDatabase_Impl extends RestaurantRoomDatabase {
   protected InvalidationTracker createInvalidationTracker() {
     final HashMap<String, String> _shadowTablesMap = new HashMap<String, String>(0);
     HashMap<String, Set<String>> _viewTables = new HashMap<String, Set<String>>(0);
-    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "favorites","user");
+    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "favorites","user","userPic","restaurantPic");
   }
 
   @Override
@@ -133,6 +163,8 @@ public final class RestaurantRoomDatabase_Impl extends RestaurantRoomDatabase {
       super.beginTransaction();
       _db.execSQL("DELETE FROM `favorites`");
       _db.execSQL("DELETE FROM `user`");
+      _db.execSQL("DELETE FROM `userPic`");
+      _db.execSQL("DELETE FROM `restaurantPic`");
       super.setTransactionSuccessful();
     } finally {
       super.endTransaction();

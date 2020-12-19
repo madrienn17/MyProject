@@ -1,6 +1,8 @@
 package com.example.myproject.ui.adapters
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +11,11 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.firstapplication.R
 import com.example.myproject.models.Favorite
 import com.example.myproject.models.Restaurant
+import com.example.myproject.ui.fragments.RestaurantsListFragment
 import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.example.myproject.utils.Constants
 import com.google.android.material.snackbar.Snackbar
@@ -37,16 +41,27 @@ class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Cont
            R.layout.list_item_row,
            parent, false
        )
-
         return RestaurantViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: RestaurantViewHolder, position: Int) {
         val currentItem = restaurantList[position]
+
         Glide.with(holder.itemView.context)
                 .load(currentItem.image_url)
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .into(holder.image).view
+
+        for (i in RestaurantsListFragment.restPics) {
+            if (currentItem.name == i.restName) {
+                val bmp: Bitmap = BitmapFactory.decodeByteArray(i.restPic, 0, i.restPic.size)
+                Glide.with(holder.itemView.context)
+                        .load(bmp)
+                        .apply(RequestOptions().centerCrop())
+                        .into(holder.image).view
+            }
+        }
+
         holder.price.text = currentItem.price.times('$')
         holder.address.text = currentItem.address
         holder.name.text = currentItem.name

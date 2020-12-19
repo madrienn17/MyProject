@@ -5,10 +5,13 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,16 +22,23 @@ import android.widget.Toast
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.firstapplication.R
 import com.example.myproject.models.Restaurant
+import com.example.myproject.models.RestaurantPic
+import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.io.ByteArrayOutputStream
 
 class DetailsFragment: Fragment() {
     private lateinit var myView: View
     private lateinit var restaurant: Restaurant
     private lateinit var imageView:ImageView
+    private val daoViewModel: DaoViewModel by activityViewModels()
+    private lateinit var name: String
     private val TAG = "DetailsFragment"
 
     @SuppressLint("CutPasteId")
@@ -38,7 +48,7 @@ class DetailsFragment: Fragment() {
         navBar!!.visibility = View.VISIBLE
         myView = inflater.inflate(R.layout.fragment_details, container, false)
 
-        val name = requireArguments().get("name").toString()
+        name = requireArguments().get("name").toString()
         val address = requireArguments().get("address").toString()
         val city = requireArguments().get("city").toString()
         val state = requireArguments().get("state").toString()
@@ -66,9 +76,20 @@ class DetailsFragment: Fragment() {
             findViewById<TextView>(R.id.details_mobile_reserve_url).text = mobile_reserve_url
             imageView = findViewById(R.id.details_image)
 
-            Glide.with(context)
-                .load(image)
-                .into(imageView).view
+            for (i in RestaurantsListFragment.restPics) {
+                if (name == i.restName) {
+                    val bmp: Bitmap = BitmapFactory.decodeByteArray(i.restPic, 0, i.restPic.size)
+                    Glide.with(requireContext())
+                            .load(bmp)
+                            .apply(RequestOptions().centerCrop())
+                            .into(imageView).view
+                }
+                else {
+                    Glide.with(context)
+                            .load(image)
+                            .into(imageView).view
+                }
+            }
         }
 
         val mapButton =myView.findViewById<ImageButton>(R.id.view_location_map)
@@ -133,7 +154,7 @@ class DetailsFragment: Fragment() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when(requestCode){
             PERMISSION_CODE -> {
-                if (grantResults.size >0 && grantResults[0] ==
+                if (grantResults.isNotEmpty() && grantResults[0] ==
                     PackageManager.PERMISSION_GRANTED){
                     //permission from popup granted
                     openGallery()
@@ -150,6 +171,14 @@ class DetailsFragment: Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
            imageView.setImageURI(data?.data)
+
+            val baos = ByteArrayOutputStream()
+            @SuppressWarnings("deprecation")
+            val bitmap: Bitmap = MediaStore.Images.Media.getBitmap(context?.contentResolver, data?.data)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val imageBytes:ByteArray = baos.toByteArray()
+
+            daoViewModel.insertRestPic(RestaurantPic(name,imageBytes))
         }
     }
 

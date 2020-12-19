@@ -5,9 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.myproject.models.Favorite
+import com.example.myproject.models.RestaurantPic
 import com.example.myproject.models.User
+import com.example.myproject.models.UserPic
 
-@Database(entities= [Favorite::class, User::class], version = 5, exportSchema = false)
+@Database(entities= [Favorite::class, User::class, UserPic::class, RestaurantPic::class], version = 7, exportSchema = false)
 abstract class RestaurantRoomDatabase : RoomDatabase() {
     abstract fun RestaurantDao(): RestaurantDao
 

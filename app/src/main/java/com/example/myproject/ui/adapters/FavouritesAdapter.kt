@@ -1,6 +1,8 @@
 package com.example.myproject.ui.adapters
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,10 +17,12 @@ import androidx.lifecycle.ViewModelStore
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.firstapplication.R
 import com.example.myproject.models.Favorite
 import com.example.myproject.models.Restaurant
 import com.example.myproject.repository.ApiRepository
+import com.example.myproject.ui.fragments.RestaurantsListFragment
 import com.example.myproject.ui.viewmodels.ApiViewModel
 import com.example.myproject.ui.viewmodels.ApiViewModelFactory
 import com.example.myproject.ui.viewmodels.DaoViewModel
@@ -51,13 +55,25 @@ class FavouritesAdapter(private val context: Context, val daoViewModel: DaoViewM
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = favoritesList[position]
 
-        Glide.with(holder.itemView.context)
-            .load(currentItem.image_url)
-            .placeholder(R.drawable.ic_launcher_foreground)
-            .into(holder.image).view
         holder.price.text = "$".repeat(currentItem.price)
         holder.address.text = currentItem.address
         holder.name.text = currentItem.name
+
+        for (i in RestaurantsListFragment.restPics) {
+            if (currentItem.name == i.restName) {
+                val bmp: Bitmap = BitmapFactory.decodeByteArray(i.restPic, 0, i.restPic.size)
+                Glide.with(holder.itemView.context)
+                        .load(bmp)
+                        .apply(RequestOptions().centerCrop())
+                        .into(holder.image).view
+            }
+            else {
+                Glide.with(holder.itemView.context)
+                        .load(currentItem.image_url)
+                        .placeholder(R.drawable.ic_launcher_foreground)
+                        .into(holder.image).view
+            }
+        }
 
 
         holder.itemView.setOnClickListener {

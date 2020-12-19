@@ -39,4 +39,6 @@
     <string name="previous">Previous</string>
     <string name="next">Next</string>
     <string name="log_in_register">Log in/Register</string>
+    <string name="del_menu">Delete</string>
+    <string name="menu_logout">menu_logout</string>
 </resources>

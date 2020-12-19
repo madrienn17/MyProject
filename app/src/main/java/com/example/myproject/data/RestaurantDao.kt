@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.myproject.models.Favorite
+import com.example.myproject.models.RestaurantPic
 import com.example.myproject.models.User
+import com.example.myproject.models.UserPic
 
 @Dao
 interface RestaurantDao {
@@ -33,5 +35,20 @@ interface RestaurantDao {
 
     @Query("DELETE FROM user")
     suspend fun deleteAllUsers()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUserPic(userPic: UserPic)
+
+    @Query("SELECT * from userPic ")
+    fun selectUserPics(): LiveData<List<UserPic>>
+
+    @Query("DELETE from userPic")
+    suspend fun deleteUserPics()
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertRestPic(restaurantPic: RestaurantPic)
+
+    @Query("SELECT * from restaurantPic")
+    fun selectRestPics() : LiveData<List<RestaurantPic>>
 
 }
