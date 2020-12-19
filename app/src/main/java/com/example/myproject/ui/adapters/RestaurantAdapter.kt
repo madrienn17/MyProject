@@ -50,6 +50,7 @@ class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Cont
         Glide.with(holder.itemView.context)
                 .load(currentItem.image_url)
                 .placeholder(R.drawable.ic_launcher_foreground)
+                .apply(RequestOptions().centerCrop())
                 .into(holder.image).view
 
         for (i in RestaurantsListFragment.restPics) {
@@ -69,6 +70,9 @@ class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Cont
         if (isFavoriteForCurr(currentItem)) {
             holder.favourite.setBackgroundResource(R.drawable.star_filled)
         }
+        else {
+            holder.favourite.setBackgroundResource(R.drawable.star)
+        }
 
         holder.favourite.setOnClickListener {
             holder.favourite.setBackgroundResource(R.drawable.star_filled)
@@ -82,8 +86,7 @@ class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Cont
         }
 
         holder.favourite.setOnLongClickListener {
-            fav = Favorite(currentItem.id,Constants.USER_NAME)
-            daoViewModel.deleteRestaurantDB(fav)
+            daoViewModel.deleteRestaurantDB(currentItem.id)
             holder.favourite.setBackgroundResource(R.drawable.star)
             Snackbar.make(
                 holder.itemView,
@@ -154,10 +157,10 @@ class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Cont
             }
         }
     }
-    //doesn't work properly
+
     private fun isFavoriteForCurr(rest:Restaurant) : Boolean{
-        for (i in Constants.favoritIds) {
-            if (i == rest.id) {
+        for (i in FavouritesAdapter.restFavs) {
+            if (i.name == rest.name && i.id == rest.id) {
                 return true
             }
         }

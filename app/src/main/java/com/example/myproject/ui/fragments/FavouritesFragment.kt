@@ -13,6 +13,7 @@ import com.example.myproject.MainActivity
 import com.example.myproject.ui.adapters.FavouritesAdapter
 import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.example.myproject.utils.Constants
+import kotlinx.android.synthetic.main.fragment_favourites_list.view.*
 
 class FavouritesFragment : Fragment() {
     private lateinit var favorites: RecyclerView
@@ -28,7 +29,7 @@ class FavouritesFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_favourites_list, container, false)
 
         adapter = FavouritesAdapter(requireContext(),daoViewModel)
-        favorites = root.findViewById(R.id.fav_list)
+        favorites = root.fav_list
         favorites.adapter = adapter
         favorites.layoutManager = LinearLayoutManager(activity)
         favorites.setHasFixedSize(true)
@@ -42,6 +43,7 @@ class FavouritesFragment : Fragment() {
                 adapter.setFav(FavouritesAdapter.restFavs)
             })
         }
+
         setHasOptionsMenu(true)
         return root
     }
@@ -53,6 +55,7 @@ class FavouritesFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_delete) {
             deleteAllUser()
+            adapter.notifyDataSetChanged()
             return true
         }
         return super.onOptionsItemSelected(item)

@@ -3,7 +3,6 @@ package com.example.myproject.data;
 import android.database.Cursor;
 import androidx.lifecycle.LiveData;
 import androidx.room.CoroutinesRoom;
-import androidx.room.EntityDeletionOrUpdateAdapter;
 import androidx.room.EntityInsertionAdapter;
 import androidx.room.RoomDatabase;
 import androidx.room.RoomSQLiteQuery;
@@ -40,7 +39,7 @@ public final class RestaurantDao_Impl implements RestaurantDao {
 
   private final EntityInsertionAdapter<RestaurantPic> __insertionAdapterOfRestaurantPic;
 
-  private final EntityDeletionOrUpdateAdapter<Favorite> __deletionAdapterOfFavorite;
+  private final SharedSQLiteStatement __preparedStmtOfDeleteRestaurantDao;
 
   private final SharedSQLiteStatement __preparedStmtOfDeleteAllFavorites;
 
@@ -145,15 +144,11 @@ public final class RestaurantDao_Impl implements RestaurantDao {
         stmt.bindLong(3, value.getRestPicId());
       }
     };
-    this.__deletionAdapterOfFavorite = new EntityDeletionOrUpdateAdapter<Favorite>(__db) {
+    this.__preparedStmtOfDeleteRestaurantDao = new SharedSQLiteStatement(__db) {
       @Override
       public String createQuery() {
-        return "DELETE FROM `favorites` WHERE `id` = ?";
-      }
-
-      @Override
-      public void bind(SupportSQLiteStatement stmt, Favorite value) {
-        stmt.bindLong(1, value.getId());
+        final String _query = "DELETE FROM favorites WHERE restId=?";
+        return _query;
       }
     };
     this.__preparedStmtOfDeleteAllFavorites = new SharedSQLiteStatement(__db) {
@@ -249,17 +244,21 @@ public final class RestaurantDao_Impl implements RestaurantDao {
   }
 
   @Override
-  public Object deleteRestaurantDao(final Favorite favorite, final Continuation<? super Unit> p1) {
+  public Object deleteRestaurantDao(final long rId, final Continuation<? super Unit> p1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteRestaurantDao.acquire();
+        int _argIndex = 1;
+        _stmt.bindLong(_argIndex, rId);
         __db.beginTransaction();
         try {
-          __deletionAdapterOfFavorite.handle(favorite);
+          _stmt.executeUpdateDelete();
           __db.setTransactionSuccessful();
           return Unit.INSTANCE;
         } finally {
           __db.endTransaction();
+          __preparedStmtOfDeleteRestaurantDao.release(_stmt);
         }
       }
     }, p1);

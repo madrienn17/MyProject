@@ -19,21 +19,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.firstapplication.R
-import com.example.myproject.models.Favorite
 import com.example.myproject.models.Restaurant
 import com.example.myproject.repository.ApiRepository
 import com.example.myproject.ui.fragments.RestaurantsListFragment
 import com.example.myproject.ui.viewmodels.ApiViewModel
 import com.example.myproject.ui.viewmodels.ApiViewModelFactory
 import com.example.myproject.ui.viewmodels.DaoViewModel
-import com.example.myproject.utils.Constants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class FavouritesAdapter(private val context: Context, val daoViewModel: DaoViewModel) : RecyclerView.Adapter<FavouritesAdapter.MyViewHolder>() {
+class FavouritesAdapter(private val context: Context, private val daoViewModel: DaoViewModel) : RecyclerView.Adapter<FavouritesAdapter.MyViewHolder>() {
     var favoritesList = emptyList<Restaurant>()
 
     inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -48,6 +46,7 @@ class FavouritesAdapter(private val context: Context, val daoViewModel: DaoViewM
             R.layout.favourites_item_row,
             parent, false
         )
+
         Companion.context = context
         return MyViewHolder(itemView)
     }
@@ -108,8 +107,7 @@ class FavouritesAdapter(private val context: Context, val daoViewModel: DaoViewM
                     setTitle("Are you sure you want to delete this item?")
                     setPositiveButton("Yes"
                     ) { _, _ ->
-                        val fav = Favorite(currentItem.id, Constants.USER_NAME)
-                        daoViewModel.deleteRestaurantDB(fav)
+                        daoViewModel.deleteRestaurantDB(currentItem.id)
                         notifyDataSetChanged()
                         Toast.makeText(context, "${currentItem.name} deleted  ", Toast.LENGTH_SHORT).show()
                     }
@@ -129,11 +127,15 @@ class FavouritesAdapter(private val context: Context, val daoViewModel: DaoViewM
     fun setFav(favs:List<Restaurant>) {
         this.favoritesList = favs
         Log.d("SETFAVLIST", favoritesList.toString())
+        if (favoritesList.isNotEmpty()) {
+            hasFavorites = true
+        }
         notifyDataSetChanged()
     }
 
     companion object: CoroutineScope {
         var restFavs = emptyList<Restaurant>()
+        var hasFavorites = false
 
         lateinit var context: Context
         lateinit var restaurantViewModel: ApiViewModel
@@ -166,7 +168,7 @@ class FavouritesAdapter(private val context: Context, val daoViewModel: DaoViewM
                         }
                     }
                 } else {
-                    favrests = Constants.emptyRest.toMutableList()
+                    favrests = emptyList<Restaurant>().toMutableList()
                 }
                 restFavs = favrests.toList()
             }

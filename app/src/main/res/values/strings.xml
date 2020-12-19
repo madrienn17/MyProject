@@ -41,4 +41,8 @@
     <string name="log_in_register">Log in/Register</string>
     <string name="del_menu">Delete</string>
     <string name="menu_logout">menu_logout</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="no_fav_str">No favorites added yet! Try to find some!</string>
+    <string name="first_page">1</string>
 </resources>

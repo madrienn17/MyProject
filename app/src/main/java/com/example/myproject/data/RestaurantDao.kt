@@ -13,8 +13,8 @@ interface RestaurantDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(favorite: Favorite)
 
-    @Delete
-    suspend fun deleteRestaurantDao(favorite: Favorite)
+    @Query("DELETE FROM favorites WHERE restId=:rId")
+    suspend fun deleteRestaurantDao(rId:Long)
 
     @Query("Delete FROM favorites")
     suspend fun deleteAllFavorites()

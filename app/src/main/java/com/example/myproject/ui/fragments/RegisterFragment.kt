@@ -86,13 +86,14 @@ class RegisterFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
     }
+
     companion object {
         fun setUser(name:String) {
             Constants.USER_NAME = name
         }
     }
 
-    fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
+    private fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
         this.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 afterTextChanged.invoke(s.toString())
@@ -104,29 +105,29 @@ class RegisterFragment : Fragment() {
         })
     }
 
-    fun EditText.validate(message: String, validator: (String) -> Boolean) {
+    private fun EditText.validate(message: String, validator: (String) -> Boolean) {
         this.afterTextChanged {
             this.error = if (validator(it)) null else message
         }
         this.error = if (validator(this.text.toString())) null else message
     }
 
-    fun String.isValidEmail(): Boolean
+    private fun String.isValidEmail(): Boolean
         = this.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(this).matches()
 
-    fun String.isValidPassword():Boolean
+    private fun String.isValidPassword():Boolean
         = this.isNotEmpty() && (this.length >= 8 )
 
-    fun String.isValidName() : Boolean
+    private fun String.isValidName() : Boolean
         = this.isNotEmpty()
 
     fun String.isValidPhone() : Boolean
         = this.isNotEmpty() && Patterns.PHONE.matcher(this).matches()
 
-    fun String.isValidAddress():Boolean
+    private fun String.isValidAddress():Boolean
         = this.isNotEmpty() && isLettersOrDigits(this)
 
-    fun isLettersOrDigits(chars: String): Boolean {
+    private fun isLettersOrDigits(chars: String): Boolean {
         return chars.filter { it in 'A'..'Z' || it in 'a'..'z' || it in '0'..'9' }
                 .length == chars.length || chars.contains(' ') || chars.contains(',')
     }

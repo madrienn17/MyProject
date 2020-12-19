@@ -1,13 +1,12 @@
 package com.example.myproject.ui.fragments
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.SearchView
-import android.widget.Spinner
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
@@ -26,13 +25,14 @@ import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.example.myproject.utils.Constants
 import com.example.myproject.utils.Constants.Companion.favoritIds
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.fragment_restaurants.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class RestaurantsListFragment: Fragment(), CoroutineScope {
+class RestaurantsListFragment: Fragment(), CoroutineScope, TextWatcher {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + Job()
     private lateinit var restaurantList: RecyclerView
@@ -42,7 +42,10 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
     lateinit var allRestPic: LiveData<List<RestaurantPic>>
     var restPics: List<RestaurantPic> = listOf()
     private val daoViewModel: DaoViewModel by activityViewModels()
-    var page: Int = 1
+    lateinit var citySpinner: Spinner
+    lateinit var countrySpinner: Spinner
+    lateinit var priceSpinner: Spinner
+    lateinit var pageNumber: EditText
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -79,9 +82,9 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
             })
         }
 
-        val searchbar = root.findViewById<SearchView>(R.id.searchView)
+        val searchBar = root.findViewById<SearchView>(R.id.searchView)
 
-        searchbar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return if(query.isNullOrEmpty()) {
                     false
@@ -114,9 +117,12 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
         val countrySpinnerAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, countryList)
         val priceSpinnerAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, priceList)
 
-        val citySpinner: Spinner = root.findViewById(R.id.spinner_city)
-        val countrySpinner = root.findViewById<Spinner>(R.id.spinner_country)
-        val priceSpinner = root.findViewById<Spinner>(R.id.spinner_price)
+        citySpinner = root.findViewById(R.id.spinner_city)
+        countrySpinner = root.findViewById<Spinner>(R.id.spinner_country)
+        priceSpinner = root.findViewById<Spinner>(R.id.spinner_price)
+        pageNumber = root.page_num
+
+        pageNumber.addTextChangedListener(this)
 
         citySpinner.adapter = citySpinnerAdapter
         countrySpinner.adapter = countrySpinnerAdapter
@@ -146,8 +152,8 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
                             price = priceSpinner.selectedItemPosition
                         }
                         restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-                        val restbycityresp = restaurantViewModel.getRestaurantsByAll(price,city,null)
-                        if(restbycityresp.isSuccessful) {
+                        val restbycityresp = restaurantViewModel.getRestaurantsByAll(price,city,null, pageNumber.text.toString().toInt())
+                        if(restbycityresp.isSuccessful && restbycityresp.body() != null) {
                             restbycityresp.body()?.restaurants?.let { restaurantAdapter.setData(it) }
                         }
                         else {
@@ -176,7 +182,7 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
                     }
                     else {
                         restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-                        val restbycountryresp = restaurantViewModel.getRestaurantsByCountry(country, 1)
+                        val restbycountryresp = restaurantViewModel.getRestaurantsByCountry(country, pageNumber.text.toString().toInt())
                         if(restbycountryresp.isSuccessful) {
                             restbycountryresp.body()?.restaurants?.let { restaurantAdapter.setData(it) }
                         }
@@ -204,7 +210,7 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
                         val factory = ApiViewModelFactory(repository)
                         restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
 
-                        val restbypriceresp = restaurantViewModel.getRestaurantsByAll(price.toInt(),city,null)
+                        val restbypriceresp = restaurantViewModel.getRestaurantsByAll(price.toInt(),city,null, pageNumber.text.toString().toInt())
                         if (restbypriceresp.isSuccessful) {
                             restbypriceresp.body()?.restaurants?.let { restaurantAdapter.setData(it) }
                         } else {
@@ -241,5 +247,41 @@ class RestaurantsListFragment: Fragment(), CoroutineScope {
 
     companion object{
         lateinit var restPics:List<RestaurantPic>
+    }
+
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+    }
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+    }
+
+    override fun afterTextChanged(s: Editable?) {
+        if (s!!.isNotEmpty()) {
+            var city:String? = null
+            var country:String?= null
+            var price:Int? = null
+
+            if(citySpinner.selectedItemPosition != 0) {
+                city = citySpinner.selectedItem.toString()
+            }
+            if (countrySpinner.selectedItemPosition!=0) {
+                country = countrySpinner.selectedItem.toString()
+            }
+            if (priceSpinner.selectedItemPosition != 0) {
+                price = priceSpinner.selectedItemPosition.toString().toInt()
+            }
+            launch {
+                val repository = ApiRepository()
+                val factory = ApiViewModelFactory(repository)
+                restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
+
+                val restResp = restaurantViewModel.getRestaurantsByAll(price,city,country, s.toString().toInt())
+                if (restResp.isSuccessful) {
+                    restResp.body()?.restaurants?.let { restaurantAdapter.setData(it) }
+                } else {
+                    restaurantAdapter.setData(Constants.emptyRest)
+                }
+            }
+        }
     }
 }

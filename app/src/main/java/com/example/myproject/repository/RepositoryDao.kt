@@ -18,8 +18,8 @@ class RepositoryDao(private val restaurant: RestaurantDao) {
         restaurant.insert(favorite)
     }
 
-    suspend fun deleteRestaurantDao(favorite: Favorite) {
-        restaurant.deleteRestaurantDao(favorite)
+    suspend fun deleteRestaurantDao(rId:Long) {
+        restaurant.deleteRestaurantDao(rId)
     }
 
     suspend fun deleteFavorites() {

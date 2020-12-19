@@ -29,9 +29,9 @@ class DaoViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun deleteRestaurantDB(favorite: Favorite) {
+    fun deleteRestaurantDB(rId:Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteRestaurantDao(favorite)
+            repository.deleteRestaurantDao(rId)
         }
     }
 
