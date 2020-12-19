@@ -1,5 +1,7 @@
 package com.example.myproject
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -26,7 +28,8 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
        // hideSystemUI()
-    }
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#FF40C4FF")))
+        }
     override fun onSupportNavigateUp(): Boolean {
         val navController = this.findNavController(R.id.nav_host_fragment)
         return navController.navigateUp()

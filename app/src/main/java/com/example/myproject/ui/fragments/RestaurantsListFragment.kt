@@ -118,8 +118,8 @@ class RestaurantsListFragment: Fragment(), CoroutineScope, TextWatcher {
         val priceSpinnerAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, priceList)
 
         citySpinner = root.findViewById(R.id.spinner_city)
-        countrySpinner = root.findViewById<Spinner>(R.id.spinner_country)
-        priceSpinner = root.findViewById<Spinner>(R.id.spinner_price)
+        countrySpinner = root.findViewById(R.id.spinner_country)
+        priceSpinner = root.findViewById(R.id.spinner_price)
         pageNumber = root.page_num
 
         pageNumber.addTextChangedListener(this)
