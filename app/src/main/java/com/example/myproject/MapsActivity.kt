@@ -37,6 +37,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(gMap: GoogleMap) {
         this.gMap = gMap
 
+        /**
+         * getting restaurants data
+         * putting a pin with the given lat and lng coordinates
+         * displaying a label with restaurant's name
+         * zooming into it
+         **/
         val latitude = intent.getDoubleExtra("lat",-33.8523341)
         val longitude = intent.getDoubleExtra("lng", 151.2106085)
         val restName = intent.getStringExtra("name")

@@ -1,11 +1,9 @@
 package com.example.myproject.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.os.bundleOf
@@ -19,6 +17,7 @@ import com.example.myproject.models.User
 import com.example.myproject.ui.adapters.FavouritesAdapter
 import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.example.myproject.utils.Constants
+import kotlinx.android.synthetic.main.fragment_login.view.*
 
 
 class LoginFragment : Fragment() {
@@ -35,24 +34,23 @@ class LoginFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
 
+        // getting all users in a list
         allUsers = daoViewModel.readAllUsers
 
         allUsers.observe(viewLifecycleOwner, { us ->
             users = us
-            Log.d("USER",users.toString())
         })
 
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val registerButton = view.findViewById<Button>(R.id.goto_registration)
-        val signinButton = view.findViewById<Button>(R.id.sign_in)
-        userEmail = view.findViewById(R.id.user_email_login)
-        userPassword = view.findViewById(R.id.password_login)
+        val registerButton = view.goto_registration
+        val signInButton = view.sign_in
+        userEmail = view.user_email_login
+        userPassword = view.password_login
 
-        registerButton.isEnabled = false
-
+        // bundling already typed data to contiue to registration
         registerButton.setOnClickListener {
             val bundle = bundleOf(
                     "email" to userEmail.text.toString(),
@@ -61,37 +59,45 @@ class LoginFragment : Fragment() {
             findNavController().navigate(R.id.navigation_register, bundle)
         }
 
-        signinButton.setOnClickListener {
+        signInButton.setOnClickListener {
+            // checking if the user is already registered and introduced correct data
             val isValid = validUser(userEmail.text.toString(), userPassword.text.toString())
 
-                if(isValid!= null) {
-                    MainActivity.isLoggedIn = true
-                    findNavController().navigate(R.id.navigation_restaurants, bundle)
+            // if it passes, it will be navigated to restaurants
+            if(isValid!= null) {
+                MainActivity.isLoggedIn = true
+
+                // get the favorite id's  for the favs to be starred already when navigating at the restaurants page
+                    val favs = daoViewModel.getUserFavorites(Constants.USER_NAME)
+
+                    favs.observe(viewLifecycleOwner, { us ->
+                        Constants.favoritIds = us
+                        FavouritesAdapter.getRestListByid(Constants.favoritIds)
+                    })
+
+                findNavController().navigate(R.id.navigation_restaurants, bundle)
+            }
+            else {
+                // if the data doesn't match we check for misstyped credentials
+                if (isRegistered(userEmail.text.toString(), userPassword.text.toString())) {
+                    Toast.makeText(context, "Wrong credentials!", Toast.LENGTH_SHORT).show()
                 }
                 else {
-                    if (isRegistered(userEmail.text.toString(), userPassword.text.toString())) {
-                        Toast.makeText(context, "Wrong credentials!", Toast.LENGTH_SHORT).show()
-                    }
-                    else {
-                        signinButton.isEnabled = false
-                        registerButton.isEnabled = true
-                        Toast.makeText(requireContext(), "You are not a registered user! Please register", Toast.LENGTH_LONG).show()
-                    }
+                    signInButton.isEnabled = false
+                    registerButton.isEnabled = true
+                    Toast.makeText(requireContext(), "You are not a registered user! Please register", Toast.LENGTH_LONG).show()
                 }
-        }
-
-        if(MainActivity.isLoggedIn) {
-            val favs = daoViewModel.getUserFavorites(Constants.USER_NAME)
-
-            favs.observe(viewLifecycleOwner, { us ->
-                Constants.favoritIds = us
-                FavouritesAdapter.getRestListByid(Constants.favoritIds)
-            })
+            }
         }
 
         super.onViewCreated(view, savedInstanceState)
     }
 
+    /**
+     * @param email user's email string
+     * @param password user's password string
+     * @return boolean, true if user is registered, false if it's not
+     * */
     private fun isRegistered(email: String, password: String): Boolean {
         for (u in users) {
             if (u.email  == email || u.password == password) {
@@ -101,6 +107,10 @@ class LoginFragment : Fragment() {
         return false
     }
 
+    /**
+     * same params
+     * @return the user who's credentials were entered, or null
+     * */
     private fun validUser(email: String, password: String): User? {
         for (i in users) {
             if (i.email == email && i.password == password) {
@@ -110,7 +120,7 @@ class LoginFragment : Fragment() {
                         "phone" to i.phone,
                         "email" to i.email
                 )
-                RegisterFragment.setUser(i.name)
+                Constants.USER_NAME = i.name
                 return i
             }
         }

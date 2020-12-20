@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_restaurants, R.id.navigation_splash, R.id.navigation_details, R.id.navigation_profile))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#FF40C4FF")))
         }
     override fun onSupportNavigateUp(): Boolean {

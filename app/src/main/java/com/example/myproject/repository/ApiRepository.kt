@@ -1,16 +1,14 @@
 package com.example.myproject.repository
 
 import com.example.myproject.api.RestaurantApiClient
-import com.example.myproject.models.*
+import com.example.myproject.models.CityResponse
+import com.example.myproject.models.CountryResponse
+import com.example.myproject.models.Restaurant
+import com.example.myproject.models.RestaurantResponse
 import retrofit2.Response
 
 class ApiRepository {
-    suspend fun getRestaurantsByCity(city: String, page: Int): Response<RestaurantsByCity> {
-        return RestaurantApiClient.api.getRestaurantsByCity(city,page)
-    }
-    suspend fun getRestaurantsByCountry(country: String, page:Int): Response<RestaurantsByCountry> {
-        return RestaurantApiClient.api.getRestaurantByCountry(country, page)
-    }
+
     suspend fun getCities(): Response<CityResponse> {
         return RestaurantApiClient.api.getCities()
     }
@@ -20,7 +18,6 @@ class ApiRepository {
     suspend fun getRestaurantById(id:Long):Response<Restaurant> {
         return RestaurantApiClient.api.getRestaurantById(id)
     }
-
     suspend fun getAllRestaurants():Response<RestaurantResponse> {
         return RestaurantApiClient.api.getAllRestaurants()
     }

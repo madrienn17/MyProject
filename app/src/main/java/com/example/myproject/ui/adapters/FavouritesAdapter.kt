@@ -3,7 +3,6 @@ package com.example.myproject.ui.adapters
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,6 +53,7 @@ class FavouritesAdapter(private val context: Context, private val daoViewModel: 
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = favoritesList[position]
+
         holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.cardBackground))
 
         holder.price.text = "$".repeat(currentItem.price)
@@ -62,10 +62,10 @@ class FavouritesAdapter(private val context: Context, private val daoViewModel: 
 
         Glide.with(holder.itemView.context)
             .load(currentItem.image_url)
-            .apply(RequestOptions().centerCrop())
             .placeholder(R.drawable.ic_launcher_foreground)
             .into(holder.image).view
 
+        // if a restaurant with this id is present in the db, get its picture and load it
         for (i in RestaurantsListFragment.restPics) {
             if (currentItem.name == i.restName) {
                 val bmp: Bitmap = BitmapFactory.decodeByteArray(i.restPic, 0, i.restPic.size)
@@ -76,6 +76,7 @@ class FavouritesAdapter(private val context: Context, private val daoViewModel: 
             }
         }
 
+        // when clicking on an item, bundle it's data and navigate to Details screen
         holder.itemView.setOnClickListener {
             val bundle = bundleOf(
                 "name" to currentItem.name,
@@ -94,12 +95,12 @@ class FavouritesAdapter(private val context: Context, private val daoViewModel: 
                 "image" to currentItem.image_url
                 )
 
-
             Toast.makeText(this.context, "${currentItem.name} clicked", Toast.LENGTH_SHORT).show()
 
             holder.itemView.findNavController().navigate(R.id.navigation_details, bundle)
         }
 
+        // on long clicking an item, prompt to unfavorite it
         holder.itemView.setOnLongClickListener {
             val alertDialog: AlertDialog = context.let{
 
@@ -123,17 +124,20 @@ class FavouritesAdapter(private val context: Context, private val daoViewModel: 
             alertDialog.isShowing
         }
     }
+
     override fun getItemCount() = favoritesList.size
 
+    // set the values into favorites list to be displayed
     fun setFav(favs:List<Restaurant>) {
         this.favoritesList = favs
-        Log.d("SETFAVLIST", favoritesList.toString())
+        //Log.d("SETFAVLIST", favoritesList.toString())
         if (favoritesList.isNotEmpty()) {
             hasFavorites = true
         }
         notifyDataSetChanged()
     }
 
+    // content needs to be accessed outside class and needs to be companion
     companion object: CoroutineScope {
         var restFavs = emptyList<Restaurant>()
         var hasFavorites = false
@@ -144,21 +148,33 @@ class FavouritesAdapter(private val context: Context, private val daoViewModel: 
         override val coroutineContext: CoroutineContext
             get() =  Dispatchers.Main + Job()
 
+        /**
+         * @param favIds - a list with the id's of logged in user's favorited restaurants
+         * does an API call by the id, and puts the restaurants in the companion's restFavs attribute
+         * */
         fun getRestListByid(favIds: List<Long>) {
             var favrests: MutableList<Restaurant> = mutableListOf()
+
             launch {
                 val repository = ApiRepository()
                 val factory = ApiViewModelFactory(repository)
                 restaurantViewModel =
                     ViewModelProvider(ViewModelStore(), factory).get(ApiViewModel::class.java)
+
                 if (favIds.isNotEmpty()) {
+
                     for (i in favIds) {
+
                         val restresp = restaurantViewModel.getRestaurantsById(i)
+
                         if (restresp.isSuccessful && restresp.body() != null) {
                             val respbody = restresp.body()
+
                             if (respbody != null) {
                                 favrests.add(respbody)
-                            } else {
+                            }
+                            else
+                            {
                                 Toast.makeText(
                                     context,
                                     "Cannot load favorites because of API!",
@@ -168,7 +184,8 @@ class FavouritesAdapter(private val context: Context, private val daoViewModel: 
                             }
                         }
                     }
-                } else {
+                }
+                else {
                     favrests = emptyList<Restaurant>().toMutableList()
                 }
                 restFavs = favrests.toList()

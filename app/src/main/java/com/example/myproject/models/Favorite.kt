@@ -3,6 +3,7 @@ package com.example.myproject.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+// favorite entity
 @Entity(tableName = "favorites")
 data class Favorite (
         val restId:Long,

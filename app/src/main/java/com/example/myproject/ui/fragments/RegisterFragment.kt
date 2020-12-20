@@ -8,7 +8,6 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -20,6 +19,7 @@ import com.example.myproject.MainActivity
 import com.example.myproject.models.User
 import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.example.myproject.utils.Constants
+import kotlinx.android.synthetic.main.fragment_register.view.*
 
 class RegisterFragment : Fragment() {
     private val daoViewModel: DaoViewModel by activityViewModels()
@@ -43,11 +43,11 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val userName = view.findViewById<EditText>(R.id.user_name)
-        val userAddress = view.findViewById<EditText>(R.id.user_adress)
-        val userPhone = view.findViewById<EditText>(R.id.user_phone)
-        val userPassword = view.findViewById<EditText>(R.id.password)
-        val userEmail = view.findViewById<EditText>(R.id.user_email)
+        val userName = view.user_name
+        val userAddress = view.user_adress
+        val userPhone = view.user_phone
+        val userPassword = view.password
+        val userEmail = view.user_email
 
         val bundledEmail = requireArguments().get("email").toString()
         val bundledPassword = requireArguments().get("password").toString()
@@ -55,7 +55,7 @@ class RegisterFragment : Fragment() {
         userEmail.setText(bundledEmail)
         userPassword.setText(bundledPassword)
 
-        val registerButton = view.findViewById<Button>(R.id.finish_registration)
+        val registerButton = view.finish_registration
 
         userEmail.validate("Valid email address required!") { s -> s.isValidEmail() }
         userPassword.validate("Password must be more than 8 characters!") { s -> s.isValidPassword()}
@@ -72,25 +72,21 @@ class RegisterFragment : Fragment() {
                     userEmail.text.toString(),
                     userPassword.text.toString()
             )
+
             if(isRegistered(user)) {
                 Toast.makeText(context,"You are already resistered!",Toast.LENGTH_LONG).show()
             }
+
             else {
                 MainActivity.isLoggedIn = true
                 Log.d("REGISTERED", user.name)
                 daoViewModel.addUserDB(user)
-                setUser(user.name)
+                Constants.USER_NAME = user.name
                 findNavController().navigate(R.id.navigation_restaurants)
             }
         }
 
         super.onViewCreated(view, savedInstanceState)
-    }
-
-    companion object {
-        fun setUser(name:String) {
-            Constants.USER_NAME = name
-        }
     }
 
     private fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
@@ -105,6 +101,7 @@ class RegisterFragment : Fragment() {
         })
     }
 
+    // validating methods for all the fields with extension functions
     private fun EditText.validate(message: String, validator: (String) -> Boolean) {
         this.afterTextChanged {
             this.error = if (validator(it)) null else message
@@ -132,6 +129,7 @@ class RegisterFragment : Fragment() {
                 .length == chars.length || chars.contains(' ') || chars.contains(',')
     }
 
+    // check if user is already in the db
     private fun isRegistered(user:User):Boolean {
         for(u in users) {
             if((u.email == user.email) && (u.password == user.password)) {

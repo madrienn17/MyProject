@@ -31,7 +31,7 @@ import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.example.myproject.utils.Constants
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
+import kotlinx.android.synthetic.main.fragment_profile.view.*
 import java.io.ByteArrayOutputStream
 
 
@@ -62,6 +62,8 @@ class ProfileFragment : Fragment() {
     ): View? {
 
         allUsers = daoViewModel.readAllUsers
+
+        // getting user pictures from the db
         allUserPic = daoViewModel.readAllUserPic
         allUserPic.observe(viewLifecycleOwner, { us ->
             userPics = us
@@ -69,34 +71,34 @@ class ProfileFragment : Fragment() {
             //Log.d("Profiledata", userPics.toString())
         })
 
+        // if the user exists, set up it's profile data
         allUsers.observe(viewLifecycleOwner, { us ->
             users = us
-            Log.d("USERS", users.toString())
+            //Log.d("USERS", users.toString())
             setProfileData()
         })
 
-
         setHasOptionsMenu(true)
+
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         view.apply {
-            name = findViewById(R.id.user_name_profile)
-            address = findViewById(R.id.address_profile)
-            phone = findViewById(R.id.phone_profile)
-            email = findViewById(R.id.email_profile)
-            floatButton = findViewById(R.id.add_user_image)
-            profile = findViewById(R.id.profilePic)
+            name = user_name_profile
+            address = address_profile
+            phone = phone_profile
+            email = email_profile
+            floatButton = add_user_image
+            profile = profilePic
         }
 
-        button = view.findViewById(R.id.view_favourites)
-
-        button.setOnClickListener {
-            findNavController().navigate(R.id.navigation_favourites)
+        // by pressing the favorites button, redirecting to favorites fragment
+        view.view_favourites.setOnClickListener {
+        findNavController().navigate(R.id.navigation_favourites)
         }
 
+        // adding picture with the floating button
         floatButton.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (PermissionChecker.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) ==
@@ -117,6 +119,9 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
+    /**
+     * function to set the profile data for the user currently logged in
+     */
     private fun setProfileData() {
         for (i in users) {
             if(i.name == Constants.USER_NAME && MainActivity.isLoggedIn) {
@@ -128,6 +133,11 @@ class ProfileFragment : Fragment() {
         }
     }
 
+
+    /**
+     * function to get the profile picture by decoding b64 string into bytearray, then into bitmap
+     * load the decoded bitmap into profilepicture imageview styled with circlecrop
+     * */
     private fun getProfilePicture() {
         if(userPics.isNotEmpty()) {
             for (i in userPics) {
@@ -184,6 +194,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    // setting functionality for logging out via actionbar icon
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.logout_menu, menu)
     }
@@ -196,6 +207,7 @@ class ProfileFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    // logging out
     private fun logOut() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes") { _, _ ->

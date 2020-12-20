@@ -32,19 +32,19 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <!-- map activity -->
+                <activity
+                    android:name="com.example.myproject.MapsActivity"
+                    android:label="Location"
+                    android:screenOrientation="portrait" />
+        <!-- main activity -->
+                <activity android:name="com.example.myproject.MainActivity">
+                    <intent-filter>
+                        <action android:name="android.intent.action.MAIN" />
 
-        <activity
-        android:name="com.example.myproject.MapsActivity"
-        android:label="Location"
-        android:screenOrientation="portrait" />
+                        <category android:name="android.intent.category.LAUNCHER" />
+                    </intent-filter>
+                </activity>
+            </application>
 
-        <activity android:name="com.example.myproject.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-    </application>
-
-</manifest>
+        </manifest>

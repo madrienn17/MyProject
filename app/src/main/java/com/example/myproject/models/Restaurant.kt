@@ -1,5 +1,6 @@
 package com.example.myproject.models
 
+// single restaurant model
 data class Restaurant(
     var id:Long,
     var name:String,
@@ -16,9 +17,4 @@ data class Restaurant(
     var reserve_url:String,
     var mobile_reserve_url: String,
     var image_url:String
-    ){
-
-    constructor(): this(-1, "", "", "", "", "", "", "", "", -1.0,-1.0,0
-    ,"","","")
-
-}
+    )

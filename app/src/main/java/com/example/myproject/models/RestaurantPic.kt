@@ -3,7 +3,7 @@ package com.example.myproject.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-
+// restaurant picture entity
 @Entity(tableName = "restaurantPic")
 data class RestaurantPic(
         val restName:String,

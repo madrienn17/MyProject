@@ -228,7 +228,7 @@
         android:id="@+id/view_location_map"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@drawable/location"
+        android:background="@drawable/map"
         android:contentDescription="@string/view_on_map"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
@@ -245,7 +245,7 @@
         app:layout_constraintEnd_toStartOf="@+id/details_image"
         app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline3" />
+        app:layout_constraintTop_toTopOf="@+id/guideline3"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addNewImage"

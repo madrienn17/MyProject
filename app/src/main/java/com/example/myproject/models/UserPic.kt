@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+// model for user profile picture entity
 @Entity(tableName = "userPic")
 data class UserPic(
         val userName:String,

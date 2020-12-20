@@ -39,15 +39,13 @@ public final class RestaurantDao_Impl implements RestaurantDao {
 
   private final EntityInsertionAdapter<RestaurantPic> __insertionAdapterOfRestaurantPic;
 
-  private final SharedSQLiteStatement __preparedStmtOfDeleteRestaurantDao;
+  private final SharedSQLiteStatement __preparedStmtOfDeleteFavorite;
 
   private final SharedSQLiteStatement __preparedStmtOfDeleteAllFavorites;
 
   private final SharedSQLiteStatement __preparedStmtOfDeleteAllUsers;
 
   private final SharedSQLiteStatement __preparedStmtOfDeleteUserPics;
-
-  private final SharedSQLiteStatement __preparedStmtOfDeleteRestPic;
 
   public RestaurantDao_Impl(RoomDatabase __db) {
     this.__db = __db;
@@ -146,7 +144,7 @@ public final class RestaurantDao_Impl implements RestaurantDao {
         stmt.bindLong(3, value.getRestPicId());
       }
     };
-    this.__preparedStmtOfDeleteRestaurantDao = new SharedSQLiteStatement(__db) {
+    this.__preparedStmtOfDeleteFavorite = new SharedSQLiteStatement(__db) {
       @Override
       public String createQuery() {
         final String _query = "DELETE FROM favorites WHERE restId=?";
@@ -174,17 +172,10 @@ public final class RestaurantDao_Impl implements RestaurantDao {
         return _query;
       }
     };
-    this.__preparedStmtOfDeleteRestPic = new SharedSQLiteStatement(__db) {
-      @Override
-      public String createQuery() {
-        final String _query = "DELETE from restaurantPic";
-        return _query;
-      }
-    };
   }
 
   @Override
-  public Object insert(final Favorite favorite, final Continuation<? super Unit> p1) {
+  public Object insertFavorite(final Favorite favorite, final Continuation<? super Unit> p1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       public Unit call() throws Exception {
@@ -253,11 +244,11 @@ public final class RestaurantDao_Impl implements RestaurantDao {
   }
 
   @Override
-  public Object deleteRestaurantDao(final long rId, final Continuation<? super Unit> p1) {
+  public Object deleteFavorite(final long rId, final Continuation<? super Unit> p1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       public Unit call() throws Exception {
-        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteRestaurantDao.acquire();
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteFavorite.acquire();
         int _argIndex = 1;
         _stmt.bindLong(_argIndex, rId);
         __db.beginTransaction();
@@ -267,7 +258,7 @@ public final class RestaurantDao_Impl implements RestaurantDao {
           return Unit.INSTANCE;
         } finally {
           __db.endTransaction();
-          __preparedStmtOfDeleteRestaurantDao.release(_stmt);
+          __preparedStmtOfDeleteFavorite.release(_stmt);
         }
       }
     }, p1);
@@ -328,62 +319,6 @@ public final class RestaurantDao_Impl implements RestaurantDao {
         }
       }
     }, p0);
-  }
-
-  @Override
-  public Object deleteRestPic(final Continuation<? super Unit> p0) {
-    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
-      @Override
-      public Unit call() throws Exception {
-        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteRestPic.acquire();
-        __db.beginTransaction();
-        try {
-          _stmt.executeUpdateDelete();
-          __db.setTransactionSuccessful();
-          return Unit.INSTANCE;
-        } finally {
-          __db.endTransaction();
-          __preparedStmtOfDeleteRestPic.release(_stmt);
-        }
-      }
-    }, p0);
-  }
-
-  @Override
-  public LiveData<List<Favorite>> selectAllRestaurants() {
-    final String _sql = "SELECT * FROM favorites ORDER BY id ASC";
-    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
-    return __db.getInvalidationTracker().createLiveData(new String[]{"favorites"}, false, new Callable<List<Favorite>>() {
-      @Override
-      public List<Favorite> call() throws Exception {
-        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
-        try {
-          final int _cursorIndexOfRestId = CursorUtil.getColumnIndexOrThrow(_cursor, "restId");
-          final int _cursorIndexOfUserName = CursorUtil.getColumnIndexOrThrow(_cursor, "userName");
-          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
-          final List<Favorite> _result = new ArrayList<Favorite>(_cursor.getCount());
-          while(_cursor.moveToNext()) {
-            final Favorite _item;
-            final long _tmpRestId;
-            _tmpRestId = _cursor.getLong(_cursorIndexOfRestId);
-            final String _tmpUserName;
-            _tmpUserName = _cursor.getString(_cursorIndexOfUserName);
-            final int _tmpId;
-            _tmpId = _cursor.getInt(_cursorIndexOfId);
-            _item = new Favorite(_tmpRestId,_tmpUserName,_tmpId);
-            _result.add(_item);
-          }
-          return _result;
-        } finally {
-          _cursor.close();
-        }
-      }
-
-      @Override
-      protected void finalize() {
-        _statement.release();
-      }
-    });
   }
 
   @Override

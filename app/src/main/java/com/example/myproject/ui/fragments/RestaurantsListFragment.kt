@@ -39,13 +39,15 @@ class RestaurantsListFragment: Fragment(), CoroutineScope, TextWatcher {
     private lateinit var favouritesAdapter: FavouritesAdapter
     private lateinit var restaurantAdapter: RestaurantAdapter
     private lateinit var restaurantViewModel: ApiViewModel
-    lateinit var allRestPic: LiveData<List<RestaurantPic>>
-    var restPics: List<RestaurantPic> = listOf()
     private val daoViewModel: DaoViewModel by activityViewModels()
+    lateinit var allRestPic: LiveData<List<RestaurantPic>>
     lateinit var citySpinner: Spinner
     lateinit var countrySpinner: Spinner
     lateinit var priceSpinner: Spinner
     lateinit var pageNumber: EditText
+    private val repository = ApiRepository()
+    val factory = ApiViewModelFactory(repository)
+    var restPics: List<RestaurantPic> = listOf()
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -54,16 +56,20 @@ class RestaurantsListFragment: Fragment(), CoroutineScope, TextWatcher {
     ): View? {
         val navBar: BottomNavigationView? = this.activity?.findViewById(R.id.nav_view)
 
-
         val root = inflater.inflate(R.layout.fragment_restaurants, container, false)
 
         allRestPic = daoViewModel.readAllRestPic
 
+        // observing restaurant pics and saving them into companion for future use
         allRestPic.observe(viewLifecycleOwner, { us ->
             restPics = us
             saveToComp()
         })
 
+        //initializing restaurantViewModel
+        restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
+
+        // setting up recyclerview with adapter
         restaurantAdapter = RestaurantAdapter(daoViewModel, requireContext())
         favouritesAdapter = FavouritesAdapter(requireContext(),daoViewModel)
         restaurantList = root.findViewById(R.id.recyclerView)
@@ -71,6 +77,7 @@ class RestaurantsListFragment: Fragment(), CoroutineScope, TextWatcher {
         restaurantList.layoutManager = LinearLayoutManager(activity)
         restaurantList.setHasFixedSize(true)
 
+        // getting favorite ids
         if(MainActivity.isLoggedIn) {
             val favs = daoViewModel.getUserFavorites(Constants.USER_NAME)
 
@@ -82,9 +89,8 @@ class RestaurantsListFragment: Fragment(), CoroutineScope, TextWatcher {
             })
         }
 
-        val searchBar = root.findViewById<SearchView>(R.id.searchView)
-
-        searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        // performing search with filters
+        root.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return if(query.isNullOrEmpty()) {
                     false
@@ -104,6 +110,7 @@ class RestaurantsListFragment: Fragment(), CoroutineScope, TextWatcher {
             }
         })
 
+        // setting up spinners default value
         val cityList = mutableListOf("CITY")
         val countryList = mutableListOf("COUNTRY")
         val priceList = listOf("$", "1", "2", "3", "4", "5")
@@ -113,20 +120,22 @@ class RestaurantsListFragment: Fragment(), CoroutineScope, TextWatcher {
             countryList += Constants.countries!!
         }
 
+        citySpinner = root.spinner_city
+        countrySpinner = root.spinner_country
+        priceSpinner = root.spinner_price
+        pageNumber = root.page_num
+
+        // setting up spinners adapters
         val citySpinnerAdapter= ArrayAdapter(requireContext(), R.layout.spinner_item, cityList)
         val countrySpinnerAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, countryList)
         val priceSpinnerAdapter = ArrayAdapter(requireContext(), R.layout.spinner_item, priceList)
 
-        citySpinner = root.findViewById(R.id.spinner_city)
-        countrySpinner = root.findViewById(R.id.spinner_country)
-        priceSpinner = root.findViewById(R.id.spinner_price)
-        pageNumber = root.page_num
-
-        pageNumber.addTextChangedListener(this)
-
         citySpinner.adapter = citySpinnerAdapter
         countrySpinner.adapter = countrySpinnerAdapter
         priceSpinner.adapter = priceSpinnerAdapter
+
+        // adding implemented textchanged listener for the pagenumber edittext
+        pageNumber.addTextChangedListener(this)
 
         citySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -135,10 +144,8 @@ class RestaurantsListFragment: Fragment(), CoroutineScope, TextWatcher {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val city: String = parent?.getItemAtPosition(position).toString()
                 launch {
-                    val repository = ApiRepository()
-                    val factory = ApiViewModelFactory(repository)
-                    if(city == "CITY") {
-                        restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
+
+                    if(city == "CITY") { // if we are at the first item (nothing was selected by user) load all restaurants
                         val restresp = restaurantViewModel.getAllRestaurants()
                         if (restresp.isSuccessful && restresp.body() != null) {
                             restresp.body()?.let { restaurantAdapter.setData(it.restaurants) }
@@ -151,7 +158,6 @@ class RestaurantsListFragment: Fragment(), CoroutineScope, TextWatcher {
                         if(priceSpinner.selectedItemPosition != 0) {
                             price = priceSpinner.selectedItemPosition
                         }
-                        restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
                         val restbycityresp = restaurantViewModel.getRestaurantsByAll(price,city,null, pageNumber.text.toString().toInt())
                         if(restbycityresp.isSuccessful && restbycityresp.body() != null) {
                             restbycityresp.body()?.restaurants?.let { restaurantAdapter.setData(it) }
@@ -168,11 +174,7 @@ class RestaurantsListFragment: Fragment(), CoroutineScope, TextWatcher {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val country: String = parent?.getItemAtPosition(position).toString()
                 launch {
-                    val repository = ApiRepository()
-                    val factory = ApiViewModelFactory(repository)
-                    restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
                     if(country == "COUNTRY") {
-                        restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
                         val restresp = restaurantViewModel.getAllRestaurants()
                         if (restresp.isSuccessful && restresp.body() != null) {
                             restresp.body()?.let { restaurantAdapter.setData(it.restaurants) }
@@ -181,8 +183,7 @@ class RestaurantsListFragment: Fragment(), CoroutineScope, TextWatcher {
                         }
                     }
                     else {
-                        restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-                        val restbycountryresp = restaurantViewModel.getRestaurantsByCountry(country, pageNumber.text.toString().toInt())
+                        val restbycountryresp = restaurantViewModel.getRestaurantsByAll(null, null,country, pageNumber.text.toString().toInt())
                         if(restbycountryresp.isSuccessful) {
                             restbycountryresp.body()?.restaurants?.let { restaurantAdapter.setData(it) }
                         }
@@ -206,10 +207,6 @@ class RestaurantsListFragment: Fragment(), CoroutineScope, TextWatcher {
                         city = citySpinner.selectedItem.toString()
                     }
                     launch {
-                        val repository = ApiRepository()
-                        val factory = ApiViewModelFactory(repository)
-                        restaurantViewModel = ViewModelProvider(requireActivity(), factory).get(ApiViewModel::class.java)
-
                         val restbypriceresp = restaurantViewModel.getRestaurantsByAll(price.toInt(),city,null, pageNumber.text.toString().toInt())
                         if (restbypriceresp.isSuccessful) {
                             restbypriceresp.body()?.restaurants?.let { restaurantAdapter.setData(it) }
@@ -223,6 +220,7 @@ class RestaurantsListFragment: Fragment(), CoroutineScope, TextWatcher {
             }
         }
 
+        // playing with navbar's visibility on scrolledstate
         restaurantList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0 || dy < 0 && navBar!!.isShown) {
@@ -249,6 +247,7 @@ class RestaurantsListFragment: Fragment(), CoroutineScope, TextWatcher {
         lateinit var restPics:List<RestaurantPic>
     }
 
+    // pagination
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
     }
 

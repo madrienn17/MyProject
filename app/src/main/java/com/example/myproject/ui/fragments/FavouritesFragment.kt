@@ -34,6 +34,7 @@ class FavouritesFragment : Fragment() {
         favorites.layoutManager = LinearLayoutManager(activity)
         favorites.setHasFixedSize(true)
 
+        // if the user is logged in, check it's favorites, and set them in the list to be displayed
         if(MainActivity.isLoggedIn) {
             val favs = daoViewModel.getUserFavorites(Constants.USER_NAME)
 
@@ -43,7 +44,7 @@ class FavouritesFragment : Fragment() {
                 adapter.setFav(FavouritesAdapter.restFavs)
             })
         }
-
+        // setting up optionsMenu for bin icon
         setHasOptionsMenu(true)
         return root
     }
@@ -52,16 +53,18 @@ class FavouritesFragment : Fragment() {
         inflater.inflate(R.menu.delete_menu, menu)
     }
 
+    // implementing the functionality of menuitem, to delete all listed favorites
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_delete) {
-            deleteAllUser()
+            deleteAllFavorites()
             adapter.notifyDataSetChanged()
             return true
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun deleteAllUser() {
+    // perform deleting with first prompting an alert dialog for the user
+    private fun deleteAllFavorites() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes") { _, _ ->
             daoViewModel.deleteAllFavs()

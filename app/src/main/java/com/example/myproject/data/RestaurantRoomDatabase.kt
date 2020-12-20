@@ -8,7 +8,7 @@ import com.example.myproject.models.Favorite
 import com.example.myproject.models.RestaurantPic
 import com.example.myproject.models.User
 import com.example.myproject.models.UserPic
-
+// creating instance of room database
 @Database(entities= [Favorite::class, User::class, UserPic::class, RestaurantPic::class], version = 7, exportSchema = false)
 abstract class RestaurantRoomDatabase : RoomDatabase() {
     abstract fun RestaurantDao(): RestaurantDao

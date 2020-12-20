@@ -47,6 +47,7 @@ class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Cont
 
     override fun onBindViewHolder(holder: RestaurantViewHolder, position: Int) {
         val currentItem = restaurantList[position]
+
         holder.itemView.setBackgroundColor(getColor(context,R.color.cardBackground))
 
         Glide.with(holder.itemView.context)
@@ -55,6 +56,7 @@ class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Cont
                 .apply(RequestOptions().centerCrop())
                 .into(holder.image).view
 
+        // if the restaurant has picture saved in the db, display that picture
         for (i in RestaurantsListFragment.restPics) {
             if (currentItem.name == i.restName) {
                 val bmp: Bitmap = BitmapFactory.decodeByteArray(i.restPic, 0, i.restPic.size)
@@ -65,7 +67,7 @@ class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Cont
             }
         }
 
-        holder.price.text = currentItem.price.times('$')
+        holder.price.text = "$".repeat(currentItem.price) // for displaying $ instead of numbers
         holder.address.text = currentItem.address
         holder.name.text = currentItem.name
 
@@ -93,18 +95,20 @@ class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Cont
         }
 
         holder.favourite.setOnLongClickListener {
-            if (isFavoriteForCurr(currentItem)) {
-            daoViewModel.deleteRestaurantDB(currentItem.id)
+            if(isFavoriteForCurr(currentItem)) {
+                daoViewModel.deleteRestaurantDB(currentItem.id)
+                holder.favourite.setBackgroundResource(R.drawable.star)
+                Snackbar.make(
+                    holder.itemView,
+                    "${currentItem.name} removed from favourites",
+                    Snackbar.LENGTH_SHORT
+                ).show()
                 notifyDataSetChanged()
-            holder.favourite.setBackgroundResource(R.drawable.star)
-            Snackbar.make(
-                holder.itemView,
-                "${currentItem.name} removed from favourites",
-                Snackbar.LENGTH_SHORT
-            ).show()
             }
             true
         }
+
+        // when clicking on an item, bundling it's details and navigating to details fragment
         holder.itemView.setOnClickListener{
             val bundle = bundleOf(
                     "name" to currentItem.name,
@@ -114,7 +118,7 @@ class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Cont
                     "area" to currentItem.area,
                     "postal_code" to currentItem.postal_code,
                     "country" to currentItem.country,
-                    "price" to currentItem.price.times('$'),
+                    "price" to "$".repeat(currentItem.price),
                     "lat" to currentItem.lat,
                     "lng" to currentItem.lng,
                     "phone" to currentItem.phone,
@@ -127,14 +131,17 @@ class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Cont
             holder.itemView.findNavController().navigate(R.id.navigation_details, bundle)
         }
     }
+
     override fun getItemCount() = searchableList.size
 
+    // setting the data that will be exposed, saving a copy of it in the searcheble list for filtering results
     fun setData(restaurants: List<Restaurant>) {
         this.restaurantList = restaurants
         this.searchableList = restaurants.toMutableList()
         notifyDataSetChanged()
     }
 
+    // overriding the filterable inteface's methods for performing search by name
     override fun getFilter(): Filter {
         return object : Filter() {
             private val filterResults = FilterResults()
@@ -167,6 +174,11 @@ class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Cont
         }
     }
 
+    /**
+     * @param rest a single restaurant object
+     * @return boolean `true` if the rest is favorite for the user
+     * @return boolean `false` if the rest is NOT favorite for the user
+     * */
     private fun isFavoriteForCurr(rest:Restaurant) : Boolean{
         for (i in FavouritesAdapter.restFavs) {
             if (i.name == rest.name && i.id == rest.id) {
@@ -175,12 +187,5 @@ class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Cont
         }
         return false
     }
-}
 
-private fun Int.times(s: Char): String {
-    val result = StringBuffer("")
-    for (i in 1..this) {
-       result.append(s)
-    }
-    return result.toString()
 }

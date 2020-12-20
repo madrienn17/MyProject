@@ -10,23 +10,23 @@ import com.example.myproject.models.UserPic
 
 @Dao
 interface RestaurantDao {
+    // favorites
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(favorite: Favorite)
+    suspend fun insertFavorite(favorite: Favorite)
 
     @Query("DELETE FROM favorites WHERE restId=:rId")
-    suspend fun deleteRestaurantDao(rId:Long)
+    suspend fun deleteFavorite(rId:Long)
 
     @Query("Delete FROM favorites")
     suspend fun deleteAllFavorites()
 
-    @Query("SELECT * FROM favorites ORDER BY id ASC")
-    fun selectAllRestaurants(): LiveData<List<Favorite>>
     @RawQuery
     fun vacuumDb(supportSQLiteQuery: SupportSQLiteQuery): Int
 
     @Query("SELECT restId FROM favorites WHERE UserName = :userName")
     fun getUserFavorites(userName:String): LiveData<List<Long>>
 
+    // users
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertUser(user: User)
 
@@ -36,6 +36,7 @@ interface RestaurantDao {
     @Query("DELETE FROM user")
     suspend fun deleteAllUsers()
 
+    // user pictures
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserPic(userPic: UserPic)
 
@@ -45,12 +46,11 @@ interface RestaurantDao {
     @Query("DELETE from userPic")
     suspend fun deleteUserPics()
 
+    // restaurant pictures
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertRestPic(restaurantPic: RestaurantPic)
 
     @Query("SELECT * from restaurantPic")
     fun selectRestPics() : LiveData<List<RestaurantPic>>
 
-    @Query("DELETE from restaurantPic")
-    suspend fun deleteRestPic()
 }

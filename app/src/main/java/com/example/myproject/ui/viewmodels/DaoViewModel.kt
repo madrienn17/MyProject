@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.myproject.data.RestaurantRoomDatabase
 import com.example.myproject.models.Favorite
 import com.example.myproject.models.RestaurantPic
@@ -24,13 +23,13 @@ class DaoViewModel(application: Application): AndroidViewModel(application) {
 
     fun addRestaurantDB(favorite: Favorite){
         viewModelScope.launch(Dispatchers.IO) {
-            repository.insert(favorite)
+            repository.insertFavorite(favorite)
         }
     }
 
     fun deleteRestaurantDB(rId:Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteRestaurantDao(rId)
+            repository.deleteFavRest(rId)
         }
     }
 
@@ -40,11 +39,6 @@ class DaoViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun vacuumDb(supportSQLiteQuery: SupportSQLiteQuery) {
-        viewModelScope.launch (Dispatchers.IO){
-            repository.vacuumDb(supportSQLiteQuery)
-        }
-    }
 
     fun addUserDB(user: User) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -62,21 +56,9 @@ class DaoViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun deleteUserPic() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteUserPics()
-        }
-    }
-
     fun insertRestPic(restaurantPic: RestaurantPic) {
         viewModelScope.launch (Dispatchers.IO){
             repository.insertRestPic(restaurantPic)
-        }
-    }
-
-    fun deleteRestPic() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteRestPic()
         }
     }
 }
