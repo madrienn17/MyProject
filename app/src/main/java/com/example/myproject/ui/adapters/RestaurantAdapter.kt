@@ -7,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.firstapplication.R
+import com.example.myproject.MainActivity
 import com.example.myproject.models.Favorite
 import com.example.myproject.models.Restaurant
 import com.example.myproject.ui.fragments.RestaurantsListFragment
@@ -25,7 +27,6 @@ import java.util.*
 class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Context): RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>(), Filterable{
     private var restaurantList = Collections.emptyList<Restaurant>()
     var searchableList: MutableList<Restaurant> = mutableListOf()
-    private var favorites: List<Favorite> = listOf()
     private lateinit var fav : Favorite
 
     inner class RestaurantViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -46,6 +47,7 @@ class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Cont
 
     override fun onBindViewHolder(holder: RestaurantViewHolder, position: Int) {
         val currentItem = restaurantList[position]
+        holder.itemView.setBackgroundColor(getColor(context,R.color.cardBackground))
 
         Glide.with(holder.itemView.context)
                 .load(currentItem.image_url)
@@ -75,25 +77,32 @@ class RestaurantAdapter(private val daoViewModel: DaoViewModel, val context:Cont
         }
 
         holder.favourite.setOnClickListener {
-            holder.favourite.setBackgroundResource(R.drawable.star_filled)
-            fav = Favorite(currentItem.id,Constants.USER_NAME)
-            daoViewModel.addRestaurantDB(fav)
-            Snackbar.make(
-                holder.itemView,
-                "${currentItem.name} added to favourites",
-                Snackbar.LENGTH_SHORT
-            ).show()
+            if (MainActivity.isLoggedIn) {
+                holder.favourite.setBackgroundResource(R.drawable.star_filled)
+                fav = Favorite(currentItem.id, Constants.USER_NAME)
+                daoViewModel.addRestaurantDB(fav)
+                Snackbar.make(
+                    holder.itemView,
+                    "${currentItem.name} added to favourites",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+            else {
+                Toast.makeText(context,"You can't add favorites! Please sign in!", Toast.LENGTH_LONG).show()
+            }
         }
 
         holder.favourite.setOnLongClickListener {
+            if (isFavoriteForCurr(currentItem)) {
             daoViewModel.deleteRestaurantDB(currentItem.id)
+                notifyDataSetChanged()
             holder.favourite.setBackgroundResource(R.drawable.star)
             Snackbar.make(
                 holder.itemView,
                 "${currentItem.name} removed from favourites",
                 Snackbar.LENGTH_SHORT
             ).show()
-            notifyDataSetChanged()
+            }
             true
         }
         holder.itemView.setOnClickListener{

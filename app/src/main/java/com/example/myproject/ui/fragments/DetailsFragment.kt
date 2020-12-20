@@ -19,6 +19,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.fragment.app.Fragment
@@ -26,16 +28,16 @@ import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.firstapplication.R
-import com.example.myproject.models.Restaurant
+import com.example.myproject.MapsActivity
 import com.example.myproject.models.RestaurantPic
 import com.example.myproject.ui.viewmodels.DaoViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.fragment_details.view.*
 import java.io.ByteArrayOutputStream
 
 class DetailsFragment: Fragment() {
     private lateinit var myView: View
-    private lateinit var restaurant: Restaurant
     private lateinit var imageView:ImageView
     private val daoViewModel: DaoViewModel by activityViewModels()
     private lateinit var name: String
@@ -76,6 +78,11 @@ class DetailsFragment: Fragment() {
             findViewById<TextView>(R.id.details_mobile_reserve_url).text = mobile_reserve_url
             imageView = findViewById(R.id.details_image)
 
+            Glide.with(context)
+                .load(image)
+                .apply(RequestOptions().centerCrop())
+                .into(imageView).view
+
             for (i in RestaurantsListFragment.restPics) {
                 if (name == i.restName) {
                     val bmp: Bitmap = BitmapFactory.decodeByteArray(i.restPic, 0, i.restPic.size)
@@ -84,20 +91,16 @@ class DetailsFragment: Fragment() {
                             .apply(RequestOptions().centerCrop())
                             .into(imageView).view
                 }
-                else {
-                    Glide.with(context)
-                            .load(image)
-                            .into(imageView).view
-                }
             }
         }
 
-        val mapButton =myView.findViewById<ImageButton>(R.id.view_location_map)
-
-        mapButton.setOnClickListener {
-            val gmmIntentUri = Uri.parse("geo:$lat,$lng")
-            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-            mapIntent.setPackage("com.google.android.apps.maps")
+        myView.view_location_map.setOnClickListener {
+            val mapIntent = Intent(
+                context, MapsActivity::class.java).apply {
+                    putExtra("lat", lat.toDouble())
+                    putExtra("lng", lng.toDouble())
+                    putExtra("name", name)
+            }
             startActivity(mapIntent)
         }
 
@@ -106,7 +109,18 @@ class DetailsFragment: Fragment() {
             val intent = Intent()
             intent.action = Intent.ACTION_DIAL
             intent.data = Uri.parse("tel:$phone")
-            startActivity(intent)
+            if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CALL_PHONE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CALL_PHONE), 1)
+            }
+            else {
+                try {
+                    startActivity(intent)
+                } catch (e: SecurityException) {
+                    e.printStackTrace()
+                }
+            }
         }
 
         val reserveUrl = myView.findViewById<TextView>(R.id.details_reserve_url)

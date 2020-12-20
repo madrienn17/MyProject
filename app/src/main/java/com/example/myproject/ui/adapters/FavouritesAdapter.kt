@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
@@ -53,10 +54,17 @@ class FavouritesAdapter(private val context: Context, private val daoViewModel: 
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = favoritesList[position]
+        holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.cardBackground))
 
         holder.price.text = "$".repeat(currentItem.price)
         holder.address.text = currentItem.address
         holder.name.text = currentItem.name
+
+        Glide.with(holder.itemView.context)
+            .load(currentItem.image_url)
+            .apply(RequestOptions().centerCrop())
+            .placeholder(R.drawable.ic_launcher_foreground)
+            .into(holder.image).view
 
         for (i in RestaurantsListFragment.restPics) {
             if (currentItem.name == i.restName) {
@@ -66,14 +74,7 @@ class FavouritesAdapter(private val context: Context, private val daoViewModel: 
                         .apply(RequestOptions().centerCrop())
                         .into(holder.image).view
             }
-            else {
-                Glide.with(holder.itemView.context)
-                        .load(currentItem.image_url)
-                        .placeholder(R.drawable.ic_launcher_foreground)
-                        .into(holder.image).view
-            }
         }
-
 
         holder.itemView.setOnClickListener {
             val bundle = bundleOf(

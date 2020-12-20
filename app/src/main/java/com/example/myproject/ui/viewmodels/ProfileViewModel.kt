@@ -1,4 +1,3 @@
 package com.example.myproject.ui.viewmodels
 
-class ProfileViewModel {
-}
+class ProfileViewModel

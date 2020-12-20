@@ -11,5 +11,4 @@ data class UserPic(
         val userPic: String,
         @PrimaryKey(autoGenerate = true)
         val uPicId: Int = 0
-        ) {
-}
+        )

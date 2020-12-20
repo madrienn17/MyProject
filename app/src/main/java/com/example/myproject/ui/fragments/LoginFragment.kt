@@ -16,7 +16,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.firstapplication.R
 import com.example.myproject.MainActivity
 import com.example.myproject.models.User
+import com.example.myproject.ui.adapters.FavouritesAdapter
 import com.example.myproject.ui.viewmodels.DaoViewModel
+import com.example.myproject.utils.Constants
 
 
 class LoginFragment : Fragment() {
@@ -67,14 +69,36 @@ class LoginFragment : Fragment() {
                     findNavController().navigate(R.id.navigation_restaurants, bundle)
                 }
                 else {
-                    signinButton.isEnabled = false
-                    registerButton.isEnabled = true
-                    Toast.makeText(requireContext(), "You are not a registered user!",Toast.LENGTH_SHORT).show()
+                    if (isRegistered(userEmail.text.toString(), userPassword.text.toString())) {
+                        Toast.makeText(context, "Wrong credentials!", Toast.LENGTH_SHORT).show()
+                    }
+                    else {
+                        signinButton.isEnabled = false
+                        registerButton.isEnabled = true
+                        Toast.makeText(requireContext(), "You are not a registered user! Please register", Toast.LENGTH_LONG).show()
+                    }
                 }
+        }
 
+        if(MainActivity.isLoggedIn) {
+            val favs = daoViewModel.getUserFavorites(Constants.USER_NAME)
+
+            favs.observe(viewLifecycleOwner, { us ->
+                Constants.favoritIds = us
+                FavouritesAdapter.getRestListByid(Constants.favoritIds)
+            })
         }
 
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun isRegistered(email: String, password: String): Boolean {
+        for (u in users) {
+            if (u.email  == email || u.password == password) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun validUser(email: String, password: String): User? {

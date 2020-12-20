@@ -53,4 +53,8 @@ class RepositoryDao(private val restaurant: RestaurantDao) {
     suspend fun insertRestPic(restaurantPic: RestaurantPic) {
         restaurant.insertRestPic(restaurantPic)
     }
+
+    suspend fun deleteRestPic() {
+        restaurant.deleteRestPic()
+    }
 }

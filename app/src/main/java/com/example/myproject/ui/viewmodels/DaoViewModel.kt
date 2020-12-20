@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 class DaoViewModel(application: Application): AndroidViewModel(application) {
     private val restaurantDao = RestaurantRoomDatabase.getData(application).RestaurantDao()
     private val repository = RepositoryDao(restaurantDao)
-    val readAllData: LiveData<List<Favorite>> = repository.getAll
     val readAllUsers: LiveData<List<User>> = repository.getAllUsers
     val readAllUserPic: LiveData<List<UserPic>> = repository.getAllUserPics
     val readAllRestPic: LiveData<List<RestaurantPic>> = repository.getAllRestPics
@@ -53,12 +52,6 @@ class DaoViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun deleteAllUserDB() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteAllUsers()
-        }
-    }
-
     fun getUserFavorites(userName: String): LiveData<List<Long>>{
             return repository.getUserFavorites(userName)
     }
@@ -78,6 +71,12 @@ class DaoViewModel(application: Application): AndroidViewModel(application) {
     fun insertRestPic(restaurantPic: RestaurantPic) {
         viewModelScope.launch (Dispatchers.IO){
             repository.insertRestPic(restaurantPic)
+        }
+    }
+
+    fun deleteRestPic() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteRestPic()
         }
     }
 }

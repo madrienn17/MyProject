@@ -14,9 +14,9 @@
         android:id="@+id/details_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
         android:gravity="center_horizontal"
         android:text="@string/details_name"
+        android:textColor="#FF8A80"
         android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/details_address"
         app:layout_constraintEnd_toEndOf="parent"
@@ -219,6 +219,7 @@
         android:text="@string/details_mobile_reserve_url"
         android:textColor="#2196F3"
         android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_mobile_reservation"
         app:layout_constraintTop_toBottomOf="@+id/details_reserve_url" />
@@ -227,36 +228,36 @@
         android:id="@+id/view_location_map"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@drawable/map"
+        android:background="@drawable/location"
         android:contentDescription="@string/view_on_map"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/call_the_place"
-        app:layout_constraintTop_toBottomOf="@+id/details_mobile_reserve_url"
-        app:layout_constraintVertical_bias="0.115" />
+        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+        app:layout_constraintStart_toEndOf="@+id/details_image"
+        app:layout_constraintTop_toTopOf="@+id/guideline3" />
 
     <ImageButton
         android:id="@+id/call_the_place"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@drawable/telephone"
+        android:background="@drawable/phone"
         android:contentDescription="@string/call_the_place"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/view_location_map"
+        app:layout_constraintEnd_toStartOf="@+id/details_image"
+        app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/details_mobile_reserve_url"
-        app:layout_constraintVertical_bias="0.115" />
+        app:layout_constraintTop_toTopOf="@+id/guideline3" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addNewImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
+        app:backgroundTint="#FF9E80"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/details_image"
         app:layout_constraintTop_toTopOf="@+id/details_image"
-        app:srcCompat="@drawable/add" />
+        app:srcCompat="@drawable/ic_baseline_add_a_photo_24" />
 
     <ImageView
         android:id="@+id/details_image"
@@ -275,7 +276,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_percent="0.56"
+        app:layout_constraintGuide_percent="0.6"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline

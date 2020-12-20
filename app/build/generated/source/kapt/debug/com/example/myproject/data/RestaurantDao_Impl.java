@@ -47,6 +47,8 @@ public final class RestaurantDao_Impl implements RestaurantDao {
 
   private final SharedSQLiteStatement __preparedStmtOfDeleteUserPics;
 
+  private final SharedSQLiteStatement __preparedStmtOfDeleteRestPic;
+
   public RestaurantDao_Impl(RoomDatabase __db) {
     this.__db = __db;
     this.__insertionAdapterOfFavorite = new EntityInsertionAdapter<Favorite>(__db) {
@@ -169,6 +171,13 @@ public final class RestaurantDao_Impl implements RestaurantDao {
       @Override
       public String createQuery() {
         final String _query = "DELETE from userPic";
+        return _query;
+      }
+    };
+    this.__preparedStmtOfDeleteRestPic = new SharedSQLiteStatement(__db) {
+      @Override
+      public String createQuery() {
+        final String _query = "DELETE from restaurantPic";
         return _query;
       }
     };
@@ -316,6 +325,25 @@ public final class RestaurantDao_Impl implements RestaurantDao {
         } finally {
           __db.endTransaction();
           __preparedStmtOfDeleteUserPics.release(_stmt);
+        }
+      }
+    }, p0);
+  }
+
+  @Override
+  public Object deleteRestPic(final Continuation<? super Unit> p0) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteRestPic.acquire();
+        __db.beginTransaction();
+        try {
+          _stmt.executeUpdateDelete();
+          __db.setTransactionSuccessful();
+          return Unit.INSTANCE;
+        } finally {
+          __db.endTransaction();
+          __preparedStmtOfDeleteRestPic.release(_stmt);
         }
       }
     }, p0);

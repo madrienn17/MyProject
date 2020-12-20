@@ -51,4 +51,6 @@ interface RestaurantDao {
     @Query("SELECT * from restaurantPic")
     fun selectRestPics() : LiveData<List<RestaurantPic>>
 
+    @Query("DELETE from restaurantPic")
+    suspend fun deleteRestPic()
 }
